@@ -1,0 +1,20 @@
+[
+    {
+        "id": 1,
+        "image": "/photos/carousel1.jpg",
+        "title": "Kampus Islami Modern",
+        "description": "Lingkungan pendidikan yang kondusif dengan integrasi nilai-nilai Islam dan ilmu pengetahuan modern."
+    },
+    {
+        "id": 2,
+        "image": "/photos/carousel2.JPG",
+        "title": "Kegiatan Mahasiswa",
+        "description": "Mengembangkan potensi diri melalui berbagai kegiatan akademik dan non-akademik yang positif."
+    },
+    {
+        "id": 3,
+        "image": "/photos/carousel3.jpg",
+        "title": "Fasilitas Pembelajaran",
+        "description": "Didukung sarana dan prasarana yang memadai untuk menunjang proses belajar mengajar yang efektif."
+    }
+]
