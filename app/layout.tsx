@@ -4,6 +4,7 @@ import "./globals.css";
 import Script from "next/script";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import FloatingWhatsApp from "@/components/FloatingWhatsApp";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -41,10 +42,11 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${inter.variable} ${poppins.variable} antialiased bg-black text-white selection:bg-gold selection:text-black`}
+        className={`${inter.variable} ${poppins.variable} antialiased bg-[#FAF8F5] text-stone-700 selection:bg-gold selection:text-white`}
       >
         <Navbar />
         {children}
+        <FloatingWhatsApp />
         <Footer />
       </body>
     </html>
