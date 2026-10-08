@@ -10,13 +10,13 @@ import AccreditationCTA from "@/components/AccreditationCTA";
 export default function Home() {
   return (
     <main className="min-h-screen">
-      <CampusMap />
       <Hero />
       <AccreditationCTA />
       <Carousel />
       <ChairmanMessage />
       <ProgramStudi />
       <Lecturers />
+      <CampusMap />
       <CTA />
     </main>
   );
