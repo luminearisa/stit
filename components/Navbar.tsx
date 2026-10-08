@@ -18,6 +18,25 @@ export default function Navbar() {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
+    useEffect(() => {
+        if (!isMenuOpen) return;
+
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.key === 'Escape') {
+                setIsMenuOpen(false);
+                setOpenDropdown(null);
+            }
+        };
+
+        document.body.style.overflow = 'hidden';
+        window.addEventListener('keydown', handleKeyDown);
+
+        return () => {
+            document.body.style.overflow = '';
+            window.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [isMenuOpen]);
+
     const navLinks = [
         { name: 'Beranda', href: '/' },
         {
@@ -80,7 +99,7 @@ export default function Navbar() {
             </div>
 
             <nav
-                className={`w-full transition-all duration-300 ${
+                className={`relative z-40 w-full transition-all duration-300 ${
                     isScrolled 
                         ? 'bg-white/95 backdrop-blur-md shadow-md border-b border-stone-200/80' 
                         : 'bg-[#FAF8F5]/90 backdrop-blur-sm border-b border-stone-200/60'
@@ -162,6 +181,8 @@ export default function Navbar() {
                         {/* Mobile Toggle */}
                         <button
                             onClick={() => setIsMenuOpen(!isMenuOpen)}
+                            aria-expanded={isMenuOpen}
+                            aria-label="Buka atau tutup menu navigasi"
                             className="lg:hidden relative w-10 h-10 flex items-center justify-center text-stone-800 hover:text-gold transition-colors"
                         >
                             <div className="relative w-6 h-5">
@@ -172,84 +193,93 @@ export default function Navbar() {
                         </button>
                     </div>
                 </div>
+            </nav>
 
-                {/* Mobile Menu */}
-                <div
-                    className={`lg:hidden fixed inset-x-0 top-16 bottom-0 bg-white/98 backdrop-blur-2xl transition-all duration-300 ${
-                        isMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
-                    }`}
-                >
-                    <div className="h-full overflow-y-auto">
-                        <div className="container mx-auto px-6 py-8">
-                            <div className="space-y-1">
-                                {navLinks.map((link, idx) => (
-                                    link.dropdown ? (
-                                        <div key={link.name} className="border-b border-stone-100">
-                                            <button
-                                                onClick={() => toggleDropdown(link.name)}
-                                                className="w-full flex items-center justify-between px-4 py-4 text-stone-800 hover:text-gold font-semibold transition-colors group"
-                                            >
-                                                <span>{link.name}</span>
-                                                <ion-icon 
-                                                    name="chevron-down" 
-                                                    class={`text-sm transition-transform duration-300 ${openDropdown === link.name ? 'rotate-180 text-gold' : ''}`}
-                                                />
-                                            </button>
-                                            <div className={`overflow-hidden transition-all duration-300 ${openDropdown === link.name ? 'max-h-96 mb-4' : 'max-h-0'}`}>
-                                                <div className="pl-6 space-y-1">
-                                                    {link.dropdown.map((subItem) => (
-                                                        <Link
-                                                            key={subItem.name}
-                                                            href={subItem.href}
-                                                            onClick={() => setIsMenuOpen(false)}
-                                                            className="flex items-center gap-3 px-4 py-3 text-sm text-stone-600 hover:text-gold rounded-xl hover:bg-stone-50 transition-all duration-200 font-medium"
-                                                        >
-                                                            <div className="w-1.5 h-1.5 rounded-full bg-gold/50" />
-                                                            {subItem.name}
-                                                        </Link>
-                                                    ))}
-                                                </div>
+            {/* Mobile Menu: berada di luar <nav> karena backdrop-filter pada nav
+                membuat elemen fixed terikat pada nav, bukan viewport. */}
+            <div
+                className={`lg:hidden fixed inset-x-0 top-16 bottom-0 z-30 bg-white/98 backdrop-blur-2xl transition-all duration-300 ${
+                    isMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'
+                }`}
+                aria-hidden={!isMenuOpen}
+            >
+                <div className="h-full overflow-y-auto">
+                    <div className="container mx-auto px-6 py-8">
+                        <div className="space-y-1">
+                            {navLinks.map((link) => (
+                                link.dropdown ? (
+                                    <div key={link.name} className="border-b border-stone-100">
+                                        <button
+                                            onClick={() => toggleDropdown(link.name)}
+                                            aria-expanded={openDropdown === link.name}
+                                            className="w-full flex items-center justify-between px-4 py-4 text-stone-800 hover:text-gold font-semibold transition-colors group"
+                                        >
+                                            <span>{link.name}</span>
+                                            <ion-icon 
+                                                name="chevron-down" 
+                                                class={`text-sm transition-transform duration-300 ${openDropdown === link.name ? 'rotate-180 text-gold' : ''}`}
+                                            />
+                                        </button>
+                                        <div className={`overflow-hidden transition-all duration-300 ${openDropdown === link.name ? 'max-h-96 mb-4' : 'max-h-0'}`}>
+                                            <div className="pl-6 space-y-1">
+                                                {link.dropdown.map((subItem) => (
+                                                    <Link
+                                                        key={subItem.name}
+                                                        href={subItem.href}
+                                                        onClick={() => {
+                                                            setIsMenuOpen(false);
+                                                            setOpenDropdown(null);
+                                                        }}
+                                                        className="flex items-center gap-3 px-4 py-3 text-sm text-stone-600 hover:text-gold rounded-xl hover:bg-stone-50 transition-all duration-200 font-medium"
+                                                    >
+                                                        <div className="w-1.5 h-1.5 rounded-full bg-gold/50" />
+                                                        {subItem.name}
+                                                    </Link>
+                                                ))}
                                             </div>
                                         </div>
-                                    ) : (
-                                        <Link
-                                            key={link.name}
-                                            href={link.href}
-                                            onClick={() => setIsMenuOpen(false)}
-                                            className="block px-4 py-4 text-stone-800 hover:text-gold font-semibold border-b border-stone-100 transition-colors"
-                                        >
-                                            {link.name}
-                                        </Link>
-                                    )
-                                ))}
-                            </div>
+                                    </div>
+                                ) : (
+                                    <Link
+                                        key={link.name}
+                                        href={link.href}
+                                        onClick={() => {
+                                            setIsMenuOpen(false);
+                                            setOpenDropdown(null);
+                                        }}
+                                        className="block px-4 py-4 text-stone-800 hover:text-gold font-semibold border-b border-stone-100 transition-colors"
+                                    >
+                                        {link.name}
+                                    </Link>
+                                )
+                            ))}
+                        </div>
 
-                            {/* Mobile CTA & Contact */}
-                            <div className="mt-8 pt-6 border-t border-stone-200 space-y-3">
-                                <Link
-                                    href="https://siakad.alwafi.ac.id/register"
-                                    onClick={() => setIsMenuOpen(false)}
-                                    className="group relative w-full flex items-center justify-center gap-2 px-6 py-3.5 bg-gradient-to-r from-gold to-gold-hover text-white font-bold rounded-2xl overflow-hidden shadow-xl shadow-gold/20"
-                                >
-                                    <span className="relative z-10">Daftar Sekarang</span>
-                                    <ion-icon name="arrow-forward" class="text-lg relative z-10 group-hover:translate-x-1 transition-transform" />
-                                </Link>
+                        {/* Mobile CTA & Contact */}
+                        <div className="mt-8 pt-6 border-t border-stone-200 space-y-3">
+                            <Link
+                                href="https://siakad.alwafi.ac.id/register"
+                                onClick={() => setIsMenuOpen(false)}
+                                className="group relative w-full flex items-center justify-center gap-2 px-6 py-3.5 bg-gradient-to-r from-gold to-gold-hover text-white font-bold rounded-2xl overflow-hidden shadow-xl shadow-gold/20"
+                            >
+                                <span className="relative z-10">Daftar Sekarang</span>
+                                <ion-icon name="arrow-forward" class="text-lg relative z-10 group-hover:translate-x-1 transition-transform" />
+                            </Link>
 
-                                <a
-                                    href="https://wa.me/6289527217662"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    onClick={() => setIsMenuOpen(false)}
-                                    className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-2xl shadow-md transition-colors text-sm"
-                                >
-                                    <ion-icon name="logo-whatsapp" class="text-lg"></ion-icon>
-                                    <span>Chat CP PMB: 0895 2721 7662</span>
-                                </a>
-                            </div>
+                            <a
+                                href="https://wa.me/6289527217662"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                onClick={() => setIsMenuOpen(false)}
+                                className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-2xl shadow-md transition-colors text-sm"
+                            >
+                                <ion-icon name="logo-whatsapp" class="text-lg"></ion-icon>
+                                <span>Chat CP PMB: 0895 2721 7662</span>
+                            </a>
                         </div>
                     </div>
                 </div>
-            </nav>
+            </div>
         </header>
     );
 }
