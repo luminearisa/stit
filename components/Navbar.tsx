@@ -51,6 +51,7 @@ export default function Navbar() {
         },
         { name: 'Program Studi', href: '/#prodi' },
         { name: 'Dosen', href: '/#dosen' },
+        { name: 'Akreditasi', href: '/akreditasi' },
         { name: 'Jurnal', href: 'https://alwafi.ac.id/journal/index.php/stit' },
         { name: 'Berita', href: 'https://alwafi.ac.id/news/' },
     ];
