@@ -1,3 +1,4 @@
+import CampusMap from "@/components/CampusMap";
 import Hero from "@/components/Hero";
 import Carousel from "@/components/Carousel";
 import ChairmanMessage from "@/components/ChairmanMessage";
@@ -11,6 +12,7 @@ export default function Home() {
   return (
     <main className="min-h-screen">
       <AccreditationModal />
+      <CampusMap />
       <Hero />
       <AccreditationCTA />
       <Carousel />

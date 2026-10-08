@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 export default function Hero() {
     return (
-        <section id="home" className="relative min-h-[92vh] flex items-center overflow-hidden pt-32 md:pt-40 pb-20 bg-[#FAF8F5]">
+        <section id="home" className="relative min-h-[92vh] flex items-center overflow-hidden pt-16 md:pt-20 pb-20 bg-[#FAF8F5]">
             {/* Background Architecture & Atmospheric Overlay */}
             <div className="absolute inset-0 z-0 pointer-events-none">
                 {/* Background Campus Photo with Soft Blend */}
