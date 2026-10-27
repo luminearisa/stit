@@ -26,11 +26,15 @@ export default function Footer() {
                             Mencetak pendidik profesional dan berakhlak mulia dengan integrasi ilmu pengetahuan dan nilai-nilai Islam.
                         </p>
                         <div className="flex gap-4">
-                            {['logo-facebook', 'logo-instagram', 'logo-youtube'].map((icon) => (
-                                <a key={icon} href="#" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-gold hover:text-stone-950 transition-all shadow-sm">
-                                    <ion-icon name={icon}></ion-icon>
-                                </a>
-                            ))}
+                            <a href="https://www.facebook.com/p/STIT-Al-Wafi-Bogor-61572783230109/" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-gold hover:text-stone-950 transition-all shadow-sm" aria-label="Facebook">
+                                <ion-icon name="logo-facebook"></ion-icon>
+                            </a>
+                            <a href="https://www.instagram.com/stitalwafi/" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-gold hover:text-stone-950 transition-all shadow-sm" aria-label="Instagram">
+                                <ion-icon name="logo-instagram"></ion-icon>
+                            </a>
+                            <a href="https://www.youtube.com/@STITAlWafiTVOficial" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-gold hover:text-stone-950 transition-all shadow-sm" aria-label="YouTube">
+                                <ion-icon name="logo-youtube"></ion-icon>
+                            </a>
                         </div>
                     </div>
 

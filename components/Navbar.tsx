@@ -91,9 +91,9 @@ export default function Navbar() {
                     <div className="flex items-center gap-4 text-xs font-medium">
                         <span className="text-gold font-semibold">Mencetak Pendidik Islami Profesional</span>
                         <div className="flex items-center gap-2 border-l border-amber-800/60 pl-4">
-                            <a href="#" className="hover:text-gold transition-colors"><ion-icon name="logo-facebook"></ion-icon></a>
-                            <a href="#" className="hover:text-gold transition-colors"><ion-icon name="logo-instagram"></ion-icon></a>
-                            <a href="#" className="hover:text-gold transition-colors"><ion-icon name="logo-youtube"></ion-icon></a>
+                            <a href="https://www.facebook.com/p/STIT-Al-Wafi-Bogor-61572783230109/" target="_blank" rel="noopener noreferrer" className="hover:text-gold transition-colors" aria-label="Facebook"><ion-icon name="logo-facebook"></ion-icon></a>
+                            <a href="https://www.instagram.com/stitalwafi/" target="_blank" rel="noopener noreferrer" className="hover:text-gold transition-colors" aria-label="Instagram"><ion-icon name="logo-instagram"></ion-icon></a>
+                            <a href="https://www.youtube.com/@STITAlWafiTVOficial" target="_blank" rel="noopener noreferrer" className="hover:text-gold transition-colors" aria-label="YouTube"><ion-icon name="logo-youtube"></ion-icon></a>
                         </div>
                     </div>
                 </div>
