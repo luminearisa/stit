@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 
 export default function VisiMisiPage() {
@@ -41,7 +40,7 @@ export default function VisiMisiPage() {
                 <div className="container mx-auto px-4 text-center">
                     <span className="inline-block text-gold text-xs md:text-sm font-bold uppercase tracking-widest mb-2">Tentang Kami</span>
                     <h1 className="text-4xl md:text-5xl font-heading font-bold text-stone-900 mb-4">Visi, Misi & Tujuan</h1>
-                    <p className="text-[#9E7A27] text-lg md:text-xl italic font-serif">"Menuju Perguruan Tinggi Terpercaya, Unggul, dan Berdaya Saing Global 2045"</p>
+                    <p className="text-[#9E7A27] text-lg md:text-xl italic font-serif">&quot;Menuju Perguruan Tinggi Terpercaya, Unggul, dan Berdaya Saing Global 2045&quot;</p>
                 </div>
             </div>
 

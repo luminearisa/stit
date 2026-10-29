@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 import Image from 'next/image';
 
@@ -48,7 +47,7 @@ export default function ProfilPage() {
                 <div className="container mx-auto px-4 text-center">
                     <span className="inline-block text-gold text-xs md:text-sm font-bold uppercase tracking-widest mb-2">Tentang Kami</span>
                     <h1 className="text-4xl md:text-5xl font-heading font-bold text-stone-900 mb-4">Profil STIT Al Wafi Bogor</h1>
-                    <p className="text-[#9E7A27] text-lg md:text-xl italic font-serif">"Mencetak Tenaga Profesional dan Pendidik yang Berkarakter Islami"</p>
+                    <p className="text-[#9E7A27] text-lg md:text-xl italic font-serif">&quot;Mencetak Tenaga Profesional dan Pendidik yang Berkarakter Islami&quot;</p>
                 </div>
             </div>
 
@@ -83,7 +82,7 @@ export default function ProfilPage() {
 
                         <div className="space-y-6 text-base md:text-lg text-stone-700 font-normal">
                             <p>
-                                Segala puji dan syukur kami panjatkan kepada Allah Subhanahu wa Ta'ala atas rahmat dan karunia-Nya sehingga Sekolah Tinggi Ilmu Tarbiyah (STIT) Al Wafi Bogor dapat terus berperan aktif dalam mewujudkan pendidikan Islam yang berkualitas. Kehadiran STIT Al Wafi Bogor merupakan wujud dari cita-cita luhur untuk mencetak tenaga pendidik yang tidak hanya unggul dalam keilmuan, tetapi juga berkarakter Islami yang kuat, siap menghadapi tantangan global, dan mampu menjadi teladan di tengah masyarakat.
+                                Segala puji dan syukur kami panjatkan kepada Allah Subhanahu wa Ta&apos;ala atas rahmat dan karunia-Nya sehingga Sekolah Tinggi Ilmu Tarbiyah (STIT) Al Wafi Bogor dapat terus berperan aktif dalam mewujudkan pendidikan Islam yang berkualitas. Kehadiran STIT Al Wafi Bogor merupakan wujud dari cita-cita luhur untuk mencetak tenaga pendidik yang tidak hanya unggul dalam keilmuan, tetapi juga berkarakter Islami yang kuat, siap menghadapi tantangan global, dan mampu menjadi teladan di tengah masyarakat.
                             </p>
                             <p>
                                 STIT Al Wafi Bogor berkomitmen untuk menjadi institusi pendidikan yang berintegritas dan berkualitas melalui kurikulum yang terintegrasi antara ilmu pengetahuan modern dan nilai-nilai keislaman. Program unggulan kami, Program Studi Manajemen Pendidikan Islam (MPI), dirancang untuk menghasilkan tenaga pendidik dan pengelola pendidikan yang kompeten dan profesional. Didukung oleh kegiatan pembelajaran praktis, penelitian, serta pengabdian masyarakat, kami berharap dapat membentuk lulusan yang tidak hanya ahli dalam bidangnya tetapi juga memiliki kepedulian sosial dan spiritualitas yang tinggi.

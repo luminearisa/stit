@@ -1,4 +1,3 @@
-// @ts-nocheck
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -52,7 +51,7 @@ export default function Hero() {
 
                         {/* Subtitle */}
                         <p className="text-stone-600 text-base md:text-lg lg:text-xl max-w-2xl mx-auto lg:mx-0 leading-relaxed font-normal">
-                            Sekolah Tinggi Ilmu Tarbiyah Al Wafi Bogor mengintegrasikan keilmuan modern berstandar nasional dengan manhaj Ahlusunnah wal Jama'ah untuk melahirkan pemimpin pendidikan masa depan.
+                            Sekolah Tinggi Ilmu Tarbiyah Al Wafi Bogor mengintegrasikan keilmuan modern berstandar nasional dengan manhaj Ahlusunnah wal Jama&apos;ah untuk melahirkan pemimpin pendidikan masa depan.
                         </p>
 
                         {/* CTA Action Buttons */}

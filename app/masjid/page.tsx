@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 
 export default function MasjidPage() {
@@ -42,7 +41,7 @@ export default function MasjidPage() {
                 <div className="container mx-auto px-4 text-center">
                     <span className="inline-block text-gold text-xs md:text-sm font-bold uppercase tracking-widest mb-2">Fasilitas Kampus</span>
                     <h1 className="text-4xl md:text-5xl font-heading font-bold text-stone-900 mb-4">Masjid STIT Al Wafi</h1>
-                    <p className="text-[#9E7A27] text-lg md:text-xl italic font-serif">"Pusat Ibadah dan Pembinaan Rohani Civitas Akademika"</p>
+                    <p className="text-[#9E7A27] text-lg md:text-xl italic font-serif">&quot;Pusat Ibadah dan Pembinaan Rohani Civitas Akademika&quot;</p>
                 </div>
             </div>
 
@@ -79,7 +78,7 @@ export default function MasjidPage() {
                 {/* Call to Worship Decoration */}
                 <section className="mt-24 py-16 border-t border-stone-200 text-center relative">
                     <p className="font-serif text-2xl md:text-4xl text-[#9E7A27] italic max-w-4xl mx-auto leading-relaxed">
-                        "Hanya yang memakmurkan masjid-masjid Allah ialah orang-orang yang beriman kepada Allah dan Hari kemudian"
+                        &quot;Hanya yang memakmurkan masjid-masjid Allah ialah orang-orang yang beriman kepada Allah dan Hari kemudian&quot;
                     </p>
                     <p className="mt-4 text-stone-500 font-semibold tracking-widest uppercase text-xs md:text-sm">QS. At-Taubah: 18</p>
                 </section>

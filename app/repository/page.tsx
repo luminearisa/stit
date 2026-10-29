@@ -1,4 +1,3 @@
-// @ts-nocheck
 import Link from 'next/link';
 import { Metadata } from 'next';
 import RepositoryDocuments from '@/components/RepositoryDocuments';

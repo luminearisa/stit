@@ -1,6 +1,3 @@
-// @ts-nocheck
-import Link from 'next/link';
-
 export default function ProgramStudi() {
     const characters = [
         { code: 'C', name: 'Credible', desc: 'Dapat dipercaya dan memiliki integritas' },

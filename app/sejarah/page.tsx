@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react';
 
 export default function SejarahPage() {
@@ -36,7 +35,7 @@ export default function SejarahPage() {
                 <div className="container mx-auto px-4 text-center">
                     <span className="inline-block text-gold text-xs md:text-sm font-bold uppercase tracking-widest mb-2">Tentang Kami</span>
                     <h1 className="text-4xl md:text-5xl font-heading font-bold text-stone-900 mb-4">Profil Yayasan Al Sudais Indonesia</h1>
-                    <p className="text-[#9E7A27] text-lg md:text-xl italic font-serif">"Badan Penyelenggara Pendidikan Tinggi STIT Al Wafi Bogor"</p>
+                    <p className="text-[#9E7A27] text-lg md:text-xl italic font-serif">&quot;Badan Penyelenggara Pendidikan Tinggi STIT Al Wafi Bogor&quot;</p>
                 </div>
             </div>
 
@@ -55,7 +54,7 @@ export default function SejarahPage() {
                                 Yayasan Al Sudais Indonesia merupakan badan penyelenggara pendidikan yang memiliki komitmen dalam pengembangan pendidikan berbasis nilai-nilai Islam. Yayasan ini didirikan sebagai bagian dari ikhtiar untuk membangun lembaga pendidikan yang memadukan penguasaan ilmu pengetahuan dengan pembentukan karakter, akhlak, dan nilai-nilai keislaman.
                             </p>
                             <p>
-                                Yayasan Al Sudais Indonesia secara resmi didirikan pada 28 Desember 2016 berdasarkan Surat Keputusan Pendirian <strong>AHU-0046992.01.14 Tahun 2016</strong>. Sejak awal berdirinya, yayasan diarahkan untuk berkontribusi dalam penyelenggaraan pendidikan Islam yang berkualitas serta membangun lingkungan pendidikan yang mendukung pengembangan ilmu, akhlak, dan kecintaan terhadap Al-Qur'an dan Sunnah.
+                                Yayasan Al Sudais Indonesia secara resmi didirikan pada 28 Desember 2016 berdasarkan Surat Keputusan Pendirian <strong>AHU-0046992.01.14 Tahun 2016</strong>. Sejak awal berdirinya, yayasan diarahkan untuk berkontribusi dalam penyelenggaraan pendidikan Islam yang berkualitas serta membangun lingkungan pendidikan yang mendukung pengembangan ilmu, akhlak, dan kecintaan terhadap Al-Qur&apos;an dan Sunnah.
                             </p>
                             <p>
                                 Dalam tahap awal pengembangannya, Yayasan Al Sudais Indonesia menyelenggarakan pendidikan dasar dan menengah berbasis pesantren melalui Al Wafi Islamic Boarding School, yang meliputi jenjang SD, SMP, dan SMA. Penyelenggaraan pendidikan tersebut menjadi bagian dari upaya yayasan dalam membangun sistem pendidikan yang tidak hanya memperhatikan pencapaian akademik, tetapi juga pembinaan karakter dan kehidupan keislaman peserta didik.

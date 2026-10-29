@@ -1,9 +1,9 @@
 import 'react';
 
-declare global {
+declare module 'react' {
     namespace JSX {
         interface IntrinsicElements {
-            'ion-icon': any;
+            'ion-icon': Record<string, unknown>;
         }
     }
 }

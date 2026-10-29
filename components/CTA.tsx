@@ -1,4 +1,3 @@
-// @ts-nocheck
 export default function CTA() {
     return (
         <section id="cta" className="py-24 bg-gradient-to-b from-[#3E3017] via-[#2D2310] to-[#1A1408] relative overflow-hidden text-center">

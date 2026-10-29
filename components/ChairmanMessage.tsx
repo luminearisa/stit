@@ -1,4 +1,3 @@
-// @ts-nocheck
 import Image from 'next/image';
 
 export default function ChairmanMessage() {
@@ -17,9 +16,9 @@ export default function ChairmanMessage() {
 
                     <div className="space-y-6 text-stone-700 leading-relaxed text-center md:text-left font-normal">
                         <p className="text-lg md:text-xl text-stone-800">
-                            <span className="text-gold text-2xl font-serif mr-1">"</span>
+                            <span className="text-gold text-2xl font-serif mr-1">&quot;</span>
                             Dengan izin Allah Subhanahu wa Ta&apos;ala, STIT Al Wafi Bogor hadir untuk membentuk pendidik Islami yang menguasai ilmu pengetahuan modern sekaligus berpegang teguh pada nilai-nilai Al-Qur&apos;an dan Sunnah.
-                            <span className="text-gold text-2xl font-serif ml-1">"</span>
+                            <span className="text-gold text-2xl font-serif ml-1">&quot;</span>
                         </p>
 
                         <div className="bg-[#F5EFE6] p-6 rounded-2xl border-l-4 border-gold my-8 shadow-sm">
@@ -44,7 +43,6 @@ export default function ChairmanMessage() {
                                         src="https://alwafi.ac.id/img/webp/pp-data0=ust_ali.webp"
                                         alt="Dr. Ali Saman Hasan"
                                         fill
-                                        className="object-cover"
                                         className="object-cover object-top"
                                     />
                                 </div>
