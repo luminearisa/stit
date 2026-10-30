@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import VisitorCounter from '@/components/VisitorCounter';
 
 export default function Navbar() {
     const [isScrolled, setIsScrolled] = useState(false);
@@ -90,6 +91,7 @@ export default function Navbar() {
                         </span>
                     </div>
                     <div className="flex items-center gap-4 text-xs font-medium">
+                        <VisitorCounter />
                         <span className="text-gold font-semibold">Mencetak Pendidik Islami Profesional</span>
                         <div className="flex items-center gap-2 border-l border-amber-800/60 pl-4">
                             <a href="https://www.facebook.com/p/STIT-Al-Wafi-Bogor-61572783230109/" target="_blank" rel="noopener noreferrer" className="hover:text-gold transition-colors" aria-label="Facebook"><ion-icon name="logo-facebook"></ion-icon></a>

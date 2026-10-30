@@ -1,4 +1,5 @@
 import CampusMap from "@/components/CampusMap";
+import NewsSection from "@/components/NewsSection";
 import Hero from "@/components/Hero";
 import Carousel from "@/components/Carousel";
 import ChairmanMessage from "@/components/ChairmanMessage";
@@ -13,6 +14,7 @@ export default function Home() {
       <Hero />
       <AccreditationCTA />
       <Carousel />
+      <NewsSection />
       <ChairmanMessage />
       <ProgramStudi />
       <Lecturers />
