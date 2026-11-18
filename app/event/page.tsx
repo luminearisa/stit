@@ -1,20 +1,448 @@
 import './event.css';
 import type { Metadata } from 'next';
 import HideGlobalChrome from '@/components/HideGlobalChrome';
+import EventNav from '@/components/event/EventNav';
+import Countdown from '@/components/event/Countdown';
+import EventFAQ from '@/components/event/EventFAQ';
+import RegistrationForm from '@/components/event/RegistrationForm';
+import {
+  event,
+  speakers,
+  priceTiers,
+  payment,
+  facilities,
+  benefits,
+  agenda,
+  contact,
+  formatRupiah,
+} from '@/data/event';
 
 export const metadata: Metadata = {
-  title: 'Pelatihan Musyrif Profesional | STIT Al Wafi Bogor',
-  description:
-    'Membentuk Musyrif Profesional sebagai Murabbi, Pembina, dan Pemimpin Santri. Informasi kegiatan, fasilitas, manfaat, kontak panitia, dan formulir saran & masukan.',
+  title: `${event.fullTitle} | ${event.organizerShort}`,
+  description: event.description,
+  openGraph: {
+    title: event.fullTitle,
+    description: event.description,
+    type: 'website',
+  },
 };
 
-const PAGE_HTML = `<a class="skip-link" href="#main-content">Lompat ke konten utama</a><header class="site-header"><div class="container site-header__inner"><a class="brand" href="#home"><span class="brand__logo"><img alt="Logo STIT Al Wafi Bogor" width="230" height="84" src="/event/logo-stit-al-wafi.png"></span><span class="brand__text"><strong class="brand__name">STIT Al Wafi Bogor</strong><span class="brand__event">Pelatihan Musyrif Profesional</span></span></a><nav class="site-header__nav" aria-label="Navigasi utama"><div class="site-header__desktop"><ul class="nav nav--desktop" role="list"><li><a class="nav__link" href="#home">Home</a></li><li><a class="nav__link" href="#kontak">Kontak<span class="nav__link-note">via WA</span></a></li><li><a class="nav__link" href="#saran-masukan">Saran &amp; Masukan</a></li><li class="nav__cta-item"><a class="btn btn--gold nav__cta nav__cta--info" href="/">Kembali Ke Beranda<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg></a></li></ul></div><button type="button" class="site-header__toggle" aria-expanded="false" aria-controls="_r_0_" aria-label="Buka menu navigasi"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu" aria-hidden="true"><path d="M4 5h16"></path><path d="M4 12h16"></path><path d="M4 19h16"></path></svg></button></nav></div><div id="_r_0_" class="mobile-menu " hidden=""><div class="container"><ul class="nav nav--mobile" role="list"><li><a class="nav__link" href="#home">Home</a></li><li><a class="nav__link" href="#kontak">Kontak<span class="nav__link-note">via WA</span></a></li><li><a class="nav__link" href="#saran-masukan">Saran &amp; Masukan</a></li><li class="nav__cta-item"><a class="btn btn--gold nav__cta nav__cta--info" href="/">Kembali Ke Beranda<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg></a></li></ul><a class="btn btn--wa mobile-menu__wa" href="https://wa.me/6289527217662?text=Assalamu'alaikum%2C%20saya%20ingin%20mendaftar%20Pelatihan%20Musyrif%20Profesional%20STIT%20Al%20Wafi%20Bogor." target="_blank" rel="noopener noreferrer">Daftar via WhatsApp Panitia</a></div></div></header><main id="main-content"><section class="hero section" id="home" aria-labelledby="hero-title"><div class="container hero__grid"><div class="hero__content"><p class="hero__eyebrow"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-round" aria-hidden="true"><circle cx="12" cy="8" r="5"></circle><path d="M20 21a8 8 0 0 0-16 0"></path></svg>STIT Al Wafi Bogor</p><h1 class="hero__title" id="hero-title">PELATIHAN MUSYRIF <span class="hero__title-accent">PROFESIONAL</span></h1><p class="hero__subtitle">Membentuk Musyrif Profesional sebagai Murabbi, Pembina, dan Pemimpin Santri.</p><p class="hero__desc">Pelatihan terapan bagi guru, pengasuh, dan pengelola pendidikan Islam untuk meningkatkan kualitas bimbingan, pembinaan, dan kepemimpinan di lingkungan pesantren serta sekolah.</p><ul class="hero__highlights" role="list"><li class="hero__highlight"><span class="hero__highlight-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar-days" aria-hidden="true"><path d="M8 2v4"></path><path d="M16 2v4"></path><rect width="18" height="18" x="3" y="4" rx="2"></rect><path d="M3 10h18"></path><path d="M8 14h.01"></path><path d="M12 14h.01"></path><path d="M16 14h.01"></path><path d="M8 18h.01"></path><path d="M12 18h.01"></path><path d="M16 18h.01"></path></svg></span><span class="hero__highlight-text"><span class="hero__highlight-label">Tanggal</span><span class="hero__highlight-value">Senin, 26 Oktober 2026</span></span></li><li class="hero__highlight"><span class="hero__highlight-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock" aria-hidden="true"><path d="M12 6v6l4 2"></path><circle cx="12" cy="12" r="10"></circle></svg></span><span class="hero__highlight-text"><span class="hero__highlight-label">Waktu</span><span class="hero__highlight-value">07.30 - 16.00 WIB</span></span></li><li class="hero__highlight"><span class="hero__highlight-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin" aria-hidden="true"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg></span><span class="hero__highlight-text"><span class="hero__highlight-label">Tempat</span><span class="hero__highlight-value">Aula STIT Al Wafi Bogor</span></span></li></ul><div class="hero__actions"><a class="btn btn--gold" href="https://siakad.alwafi.ac.id/register" target="_blank" rel="noopener noreferrer">PMB STIT</a><a class="btn btn--ghost-light" href="#manfaat"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-down" aria-hidden="true"><path d="M12 5v14"></path><path d="m19 12-7 7-7-7"></path></svg>Lihat Detail</a></div></div><div class="hero__media"><figure class="hero__flyer"><div class="smart-image hero__flyer-frame"><img class="smart-image__img hero__flyer-img" sizes="(max-width: 900px) 88vw, 399px" alt="Brosur resmi Pelatihan Musyrif Profesional STIT Al Wafi Bogor" width="1440" height="2046" loading="eager" decoding="async" fetchpriority="high" tabindex="0" role="button" srcset="/event/flyer-musyrif.webp 640w, /event/flyer-musyrif.webp 800w, /event/flyer-musyrif.webp 1280w" src="/event/flyer-musyrif.webp" style="object-fit: contain;"></div><button type="button" class="hero__zoom" aria-label="Perbesar gambar brosur Pelatihan Musyrif Profesional"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-zoom-in" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" x2="16.65" y1="21" y2="16.65"></line><line x1="11" x2="11" y1="8" y2="14"></line><line x1="8" x2="14" y1="11" y2="11"></line></svg>Klik untuk memperbesar</button><figcaption class="hero__flyer-caption">Brosur resmi Pelatihan Musyrif Profesional</figcaption></figure></div></div></section><section class="section section--muted" id="fasilitas" aria-labelledby="fasilitas-title"><div class="container"><div class="section-heading section-heading--center"><p class="section-heading__eyebrow">Selama Kegiatan</p><h2 class="section-heading__title" id="fasilitas-title">Fasilitas yang Didapat</h2><p class="section-heading__desc">Fasilitas yang tersedia bagi peserta pelatihan sepanjang kegiatan.</p></div><ul class="facilities" role="list"><li class="facility"><span class="facility__icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-badge-check" aria-hidden="true"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"></path><path d="m9 12 2 2 4-4"></path></svg></span><h3 class="facility__name">E-Sertifikat</h3><p class="facility__desc">Sertifikat elektronik sebagai bukti keikutsertaan.</p></li><li class="facility"><span class="facility__icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-book-open" aria-hidden="true"><path d="M12 7v14"></path><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"></path></svg></span><h3 class="facility__name">Materi Pelatihan</h3><p class="facility__desc">Materi terstruktur siap dipakai kembali.</p></li><li class="facility"><span class="facility__icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-cookie" aria-hidden="true"><path d="M12 2a10 10 0 1 0 10 10 4 4 0 0 1-5-5 4 4 0 0 1-5-5"></path><path d="M8.5 8.5v.01"></path><path d="M16 15.5v.01"></path><path d="M12 12v.01"></path><path d="M11 17v.01"></path><path d="M7 14v.01"></path></svg></span><h3 class="facility__name">Snack</h3><p class="facility__desc">Konsumsi ringan pada pagi hari.</p></li><li class="facility"><span class="facility__icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-coffee" aria-hidden="true"><path d="M10 2v2"></path><path d="M14 2v2"></path><path d="M16 8a1 1 0 0 1 1 1v8a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1h14a4 4 0 1 1 0 8h-1"></path><path d="M6 2v2"></path></svg></span><h3 class="facility__name">Coffee Break</h3><p class="facility__desc">Istirahat singkat di sela sesi pelatihan.</p></li><li class="facility"><span class="facility__icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-utensils-crossed" aria-hidden="true"><path d="m16 2-2.3 2.3a3 3 0 0 0 0 4.2l1.8 1.8a3 3 0 0 0 4.2 0L22 8"></path><path d="M15 15 3.3 3.3a4.2 4.2 0 0 0 0 6l7.3 7.3c.7.7 2 .7 2.8 0L15 15Zm0 0 7 7"></path><path d="m2.1 21.8 6.4-6.3"></path><path d="m19 5-7 7"></path></svg></span><h3 class="facility__name">Lunch</h3><p class="facility__desc">Makan siang selama kegiatan berlangsung.</p></li></ul></div></section><section class="section" id="manfaat" aria-labelledby="manfaat-title"><div class="container"><div class="section-heading section-heading--center"><p class="section-heading__eyebrow">Untuk Peserta</p><h2 class="section-heading__title" id="manfaat-title">Manfaat Pelatihan</h2><p class="section-heading__desc">Tiga peran utama yang dilatih agar musyrif mampu mendampingi santri secara utuh.</p></div><ul class="benefits card-grid card-grid--3" role="list"><li class="benefit"><span class="benefit__icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-compass" aria-hidden="true"><path d="m16.24 7.76-1.804 5.411a2 2 0 0 1-1.265 1.265L7.76 16.24l1.804-5.411a2 2 0 0 1 1.265-1.265z"></path><circle cx="12" cy="12" r="10"></circle></svg></span><h3 class="benefit__title">Murabbi</h3><p class="benefit__desc">Meningkatkan kemampuan membimbing dan membina santri dengan pendekatan yang terarah, sabar, dan terukur.</p><span class="benefit__index" aria-hidden="true">01</span></li><li class="benefit"><span class="benefit__icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-hand-heart" aria-hidden="true"><path d="M11 14h2a2 2 0 0 0 0-4h-3c-.6 0-1.1.2-1.4.6L3 16"></path><path d="m14.45 13.39 5.05-4.694C20.196 8 21 6.85 21 5.75a2.75 2.75 0 0 0-4.797-1.837.276.276 0 0 1-.406 0A2.75 2.75 0 0 0 11 5.75c0 1.2.802 2.248 1.5 2.946L16 11.95"></path><path d="m2 15 6 6"></path><path d="m7 20 1.6-1.4c.3-.4.8-.6 1.4-.6h4c1.1 0 2.1-.4 2.8-1.2l4.6-4.4a1 1 0 0 0-2.75-2.91"></path></svg></span><h3 class="benefit__title">Pembina</h3><p class="benefit__desc">Mengembangkan keterampilan pembinaan, kedisiplinan, dan pendampingan santri dalam keseharian.</p><span class="benefit__index" aria-hidden="true">02</span></li><li class="benefit"><span class="benefit__icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-crown" aria-hidden="true"><path d="M11.562 3.266a.5.5 0 0 1 .876 0L15.39 8.87a1 1 0 0 0 1.516.294L21.183 5.5a.5.5 0 0 1 .798.519l-2.834 10.246a1 1 0 0 1-.956.734H5.81a1 1 0 0 1-.957-.734L2.02 6.02a.5.5 0 0 1 .798-.519l4.276 3.664a1 1 0 0 0 1.516-.294z"></path><path d="M5 21h14"></path></svg></span><h3 class="benefit__title">Pemimpin Santri</h3><p class="benefit__desc">Memperkuat kemampuan kepemimpinan dan komunikasi agar mampu menggerakkan dan mengayomi fellow santri.</p><span class="benefit__index" aria-hidden="true">03</span></li></ul></div></section><section class="section section--alt" id="kontak" aria-labelledby="kontak-title"><div class="container"><div class="section-heading "><p class="section-heading__eyebrow">Butuh Bantuan?</p><h2 class="section-heading__title" id="kontak-title">Kontak Panitia</h2><p class="section-heading__desc">Hubungi panitia untuk informasi pendaftaran, kuota, dan pertanyaan lain seputar pelatihan.</p></div><div class="contact"><ul class="contact__list" role="list"><li class="contact__item"><div class="contact__link"><span class="contact__icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-round" aria-hidden="true"><circle cx="12" cy="8" r="5"></circle><path d="M20 21a8 8 0 0 0-16 0"></path></svg></span><span class="contact__body"><span class="contact__label">Kontak panitia</span><span class="contact__value">Ustadz Said</span></span></div></li><li class="contact__item"><a class="contact__link" href="https://wa.me/6289527217662?text=Assalamu'alaikum%2C%20saya%20ingin%20bertanya%20mengenai%20Pelatihan%20Musyrif%20Profesional." target="_blank" rel="noopener noreferrer"><span class="contact__icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-phone" aria-hidden="true"><path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"></path></svg></span><span class="contact__body"><span class="contact__label">Nomor WhatsApp</span><span class="contact__value">0895 2721 7662</span></span></a></li><li class="contact__item"><div class="contact__link"><span class="contact__icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-building2 lucide-building-2" aria-hidden="true"><path d="M10 12h4"></path><path d="M10 8h4"></path><path d="M14 21v-3a2 2 0 0 0-4 0v3"></path><path d="M6 10H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2"></path><path d="M6 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16"></path></svg></span><span class="contact__body"><span class="contact__label">Institusi</span><span class="contact__value">STIT Al Wafi Bogor</span></span></div></li><li class="contact__item"><div class="contact__link"><span class="contact__icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin" aria-hidden="true"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg></span><span class="contact__body"><span class="contact__label">Lokasi kegiatan</span><span class="contact__value">Kampus B Al Wafi, Jalan Pengasinan, Sawangan, Depok, Jawa Barat</span></span></div></li></ul><aside class="contact__cta-card"><span class="contact__cta-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-circle" aria-hidden="true"><path d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719"></path></svg></span><h3 class="contact__cta-title">Ada pertanyaan sebelum mendaftar?</h3><p class="contact__cta-desc">Kirim pesan langsung kepada panitia. Balasan mengikuti jam kerja panitia pelatihan.</p><a class="btn btn--wa btn--block" href="https://wa.me/6289527217662?text=Assalamu'alaikum%2C%20saya%20ingin%20bertanya%20mengenai%20Pelatihan%20Musyrif%20Profesional." target="_blank" rel="noopener noreferrer"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-circle" aria-hidden="true"><path d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719"></path></svg>Hubungi Panitia via WhatsApp</a><p class="contact__cta-note">Nomor resmi panitia: 0895 2721 7662</p></aside></div></div></section><section class="section" id="saran-masukan" aria-labelledby="saran-title"><div class="container feedback"><div class="feedback__intro"><div class="section-heading "><p class="section-heading__eyebrow">Komunikasi Terbuka</p><h2 class="section-heading__title" id="saran-title">Saran &amp; Masukan</h2><p class="section-heading__desc">Bantu kami meningkatkan kualitas pelatihan. Tuliskan saran, masukan, atau kendala yang Anda temui.</p></div><ul class="feedback__info" role="list"><li><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-info" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg><span>Kolom <strong>Nama</strong> dan <strong>Email</strong> bersifat opsional, hanya diminta bila Anda ingin panitia dapat membalas langsung.</span></li><li><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-info" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg><span>Jawaban dikirim melalui <strong>Google Form</strong> resmi panitia, sehingga langsung tersimpan dan tidak menampilkan sukses palsu.</span></li></ul></div><div class="feedback__embed"><iframe class="feedback__embed-frame" src="https://docs.google.com/forms/d/e/1FAIpQLSffi3M7V9JL_UTIDfbMjp6jZcTRHy4Z_Wp2s6QSIutSpE9wDA/viewform?embedded=true" title="Formulir Saran &amp; Masukan — Pelatihan Musyrif Profesional" height="780" loading="lazy" referrerpolicy="no-referrer-when-downgrade" style="height: 780px;">Memuat formulir…</iframe></div></div></section></main><footer class="site-footer"><div class="container"><div class="site-footer__grid"><div class="site-footer__brand"><img class="site-footer__logo" alt="Logo STIT Al Wafi Bogor" width="230" height="84" loading="lazy" src="/event/logo-stit-al-wafi.png"><p class="site-footer__institution">STIT Al Wafi Bogor</p><p class="site-footer__tagline">Pelatihan Musyrif Profesional — Membentuk Murabbi, Pembina, dan Pemimpin Santri.</p></div><div class="site-footer__col"><h2 class="site-footer__heading">Kontak</h2><ul class="site-footer__list" role="list"><li><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-phone" aria-hidden="true"><path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"></path></svg><span>Kontak panitia: <a href="https://wa.me/6289527217662?text=Assalamu'alaikum%2C%20saya%20ingin%20bertanya%20mengenai%20Pelatihan%20Musyrif%20Profesional." target="_blank" rel="noopener noreferrer">0895 2721 7662</a></span></li><li><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin" aria-hidden="true"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg><span>Alamat: <a href="https://maps.app.goo.gl/ARfG2pYuMmYZr6Uv6" target="_blank" rel="noopener noreferrer">Kampus B Al Wafi, Jalan Pengasinan, Sawangan, Depok, Jawa Barat</a></span></li><li><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-building2 lucide-building-2" aria-hidden="true"><path d="M10 12h4"></path><path d="M10 8h4"></path><path d="M14 21v-3a2 2 0 0 0-4 0v3"></path><path d="M6 10H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2"></path><path d="M6 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16"></path></svg><span>STIT Al Wafi Bogor</span></li></ul><div class="site-footer__map"><iframe class="site-footer__map-frame" src="https://www.google.com/maps?q=-6.4290864,106.7510048&amp;z=17&amp;hl=id&amp;output=embed" title="Peta lokasi STIT Al Wafi Bogor — Kampus B Al Wafi, Jalan Pengasinan, Sawangan, Depok, Jawa Barat" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe><a class="site-footer__map-link" href="https://maps.app.goo.gl/ARfG2pYuMmYZr6Uv6" target="_blank" rel="noopener noreferrer"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-external-link" aria-hidden="true"><path d="M15 3h6v6"></path><path d="M10 14 21 3"></path><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path></svg>Buka di Google Maps</a></div></div></div><div class="site-footer__bottom"><p>© 2026 STIT Al Wafi Bogor. Seluruh hak cipta dilindungi.</p></div></div></footer>`;
+const iconPaths: Record<string, React.ReactNode> = {
+  calendar: <><rect x="3" y="4" width="18" height="18" rx="2" /><path d="M8 2v4M16 2v4M3 10h18" /></>,
+  clock: <><circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" /></>,
+  video: <><rect x="2" y="6" width="14" height="12" rx="2" /><path d="m16 11 6-4v10l-6-4" /></>,
+  users: <><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" /></>,
+  layers: <><path d="m12 2 9 5-9 5-9-5 9-5Z" /><path d="m3 12 9 5 9-5M3 17l9 5 9-5" /></>,
+  shield: <><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z" /><path d="m9 12 2 2 4-4" /></>,
+  chat: <><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></>,
+  check: <path d="m5 13 4 4L19 7" />,
+  arrow: <><path d="M5 12h14" /><path d="m13 6 6 6-6 6" /></>,
+  whatsapp: <><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8v.5Z" /><path d="M16.5 11.5c-.2-.5-1-.2-1.4-.1l-.7.4a6 6 0 0 1-2.7-2.7l.4-.7c.2-.4.4-.9-.1-1.1L11 6c-.4-.2-1-.1-1.4.6a11 11 0 0 0 1.8 6.6 11 11 0 0 0 6.6 1.8c.7-.4.8-1 .6-1.4Z" /></>,
+  instagram: <><rect x="2" y="2" width="20" height="20" rx="5" /><circle cx="12" cy="12" r="4" /><path d="M18 6h.01" /></>,
+  mail: <><rect x="2" y="4" width="20" height="16" rx="2" /><path d="m2 7 10 6 10-6" /></>,
+  sparkles: <><path d="m12 3 1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9L12 3Z" /><path d="M19 16v4M17 18h4" /></>,
+};
+
+function Icon({ name, className }: { name: string; className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      {iconPaths[name] ?? iconPaths.check}
+    </svg>
+  );
+}
 
 export default function EventPage() {
+  const themeStyle = {
+    '--brand-primary': event.theme.primary,
+    '--brand-secondary': event.theme.secondary,
+    '--brand-accent': event.theme.accent,
+    '--brand-gold': event.theme.gold,
+  } as React.CSSProperties;
+
   return (
-    <>
+    <div className="event-page" id="top" style={themeStyle}>
       <HideGlobalChrome />
-      <div className="event-page" dangerouslySetInnerHTML={{ __html: PAGE_HTML }} />
-    </>
+      <EventNav />
+
+      <main>
+        {/* ============ HERO / FLYER ============ */}
+        <section className="hero" id="hero" aria-labelledby="hero-title">
+          <div className="hero__glow hero__glow--one" aria-hidden="true" />
+          <div className="hero__glow hero__glow--two" aria-hidden="true" />
+          <div className="container hero__grid">
+            <div className="hero__content">
+              <p className="hero__eyebrow"><span className="pulse-dot" aria-hidden="true" />{event.eyebrow}</p>
+              <h1 className="hero__title" id="hero-title">
+                <span className="hero__title-kicker">{event.titleKicker}</span>
+                {event.titleLines.map((line) => (
+                  <span
+                    key={line.text}
+                    className={line.tone === 'accent' ? 'hero__title-accent' : 'hero__title-main'}
+                  >
+                    {line.text}
+                  </span>
+                ))}
+              </h1>
+              <p className="hero__subtitle">{event.subtitle}</p>
+
+              <ul className="hero__meta" role="list">
+                <li><Icon name="calendar" /><span><small>Tanggal</small>{event.date}</span></li>
+                <li><Icon name="clock" /><span><small>Waktu</small>{event.time}</span></li>
+                <li><Icon name="video" /><span><small>Platform</small>{event.platform}</span></li>
+              </ul>
+
+              <Countdown />
+
+              <div className="hero__actions">
+                <a className="btn btn--gold" href="#daftar">Daftar Sekarang</a>
+                <a className="btn btn--outline" href="#biaya">Lihat Biaya</a>
+              </div>
+
+              <div className="hero__organizers">
+                <span>Diselenggarakan oleh</span>
+                <strong>{event.organizer}</strong>
+              </div>
+            </div>
+
+            {/* Flyer: gambar asli bila tersedia, jika tidak dibuat otomatis dari data */}
+            <div className="hero__media">
+              {event.flyerImage ? (
+                <figure className="flyer flyer--image">
+                  <img className="flyer__image" src={event.flyerImage} alt={`Flyer ${event.fullTitle}`} />
+                  <figcaption className="hero__flyer-caption">Flyer resmi · {event.organizer}</figcaption>
+                </figure>
+              ) : (
+                <figure className="flyer" role="img" aria-label={`Flyer ${event.fullTitle}`}>
+                  <div className="flyer__partners">
+                    {event.partners.map((partner, index) => (
+                      <span
+                        key={partner}
+                        className={[
+                          'flyer__partner',
+                          index === 0 ? 'flyer__partner--zoom' : '',
+                          index === event.partners.length - 1 ? 'flyer__partner--pL' : '',
+                        ].filter(Boolean).join(' ')}
+                      >
+                        {partner}
+                      </span>
+                    ))}
+                  </div>
+
+                  <div className="flyer__body">
+                    <p className="flyer__kicker">{event.titleKicker.toUpperCase()}</p>
+                    <h2 className="flyer__title">
+                      {event.titleLines.map((line) => (
+                        <span key={line.text} className={line.tone === 'accent' ? 'flyer__title-accent' : undefined}>
+                          {line.highlight && line.text.includes(line.highlight) ? (
+                            <>
+                              {line.text.split(line.highlight)[0]}
+                              <em>{line.highlight}</em>
+                              {line.text.split(line.highlight)[1]}
+                            </>
+                          ) : (
+                            line.text
+                          )}
+                        </span>
+                      ))}
+                    </h2>
+
+                    <div className="flyer__speakers">
+                      {speakers.map((speaker) => (
+                        <div className="flyer__speaker" key={speaker.name}>
+                          <div className="flyer__speaker-photo" aria-hidden="true">
+                            <span>{speaker.initials}</span>
+                            <i />
+                          </div>
+                          <div className="flyer__speaker-info">
+                            <strong>{speaker.name}</strong>
+                            <span>{speaker.role}</span>
+                            <small>{speaker.bio}</small>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="flyer__date">
+                      <strong>{event.date.toUpperCase()}</strong>
+                      <span>{event.time}</span>
+                    </div>
+
+                    <div
+                      className="flyer__price"
+                      style={{ gridTemplateColumns: `repeat(${priceTiers.length}, minmax(0, 1fr))` }}
+                    >
+                      {priceTiers.map((tier) => (
+                        <div key={tier.id}>
+                          <span>{tier.flyerLabel ?? tier.label}</span>
+                          <strong>
+                            {formatRupiah(tier.price)}
+                            {tier.unit === '/orang' && <small>{tier.unit}</small>}
+                          </strong>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="flyer__footer">
+                    <span><Icon name="whatsapp" /> {contact.whatsapp}</span>
+                    <span><Icon name="instagram" /> {contact.instagram}</span>
+                  </div>
+                </figure>
+              )}
+              <p className="hero__flyer-caption">Flyer resmi pelatihan · {event.organizer}</p>
+            </div>
+          </div>
+        </section>
+
+        {/* ============ INFORMASI ============ */}
+        <section className="section" id="informasi" aria-labelledby="informasi-title">
+          <div className="container">
+            <div className="section-heading">
+              <p className="section-heading__eyebrow">Tentang Acara</p>
+              <h2 className="section-heading__title" id="informasi-title">Informasi Pelatihan</h2>
+              <p className="section-heading__desc">{event.description}</p>
+            </div>
+
+            <div className="info-grid">
+              {[
+                { icon: 'calendar', label: 'Tanggal', value: event.date },
+                { icon: 'clock', label: 'Waktu', value: event.time },
+                { icon: 'video', label: 'Format', value: 'Online · Zoom Meeting' },
+                { icon: 'users', label: 'Penyelenggara', value: event.organizer },
+              ].map((item) => (
+                <article className="info-card" key={item.label}>
+                  <span className="info-card__icon"><Icon name={item.icon} /></span>
+                  <div>
+                    <span className="info-card__label">{item.label}</span>
+                    <strong className="info-card__value">{item.value}</strong>
+                  </div>
+                </article>
+              ))}
+            </div>
+
+            <div className="info-note">
+              <Icon name="sparkles" />
+              <p>
+                <strong>Siapa yang sebaiknya mengikuti?</strong> Pimpinan, dosen, tenaga
+                kependidikan, unit penjaminan mutu, serta siapa pun yang terlibat dalam
+                penyusunan dan pengelolaan SPMI di perguruan tinggi.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* ============ BIAYA ============ */}
+        <section className="section section--muted" id="biaya" aria-labelledby="biaya-title">
+          <div className="container">
+            <div className="section-heading section-heading--center">
+              <p className="section-heading__eyebrow">Investasi Ilmu</p>
+              <h2 className="section-heading__title" id="biaya-title">Biaya Pendaftaran</h2>
+              <p className="section-heading__desc">Pilih paket yang sesuai. Pendaftaran kelompok lebih hemat per peserta.</p>
+            </div>
+
+            <div className="pricing-grid">
+              {priceTiers.map((tier) => (
+                <article className={`price-card${tier.featured ? ' price-card--featured' : ''}`} key={tier.id}>
+                  {tier.featured && <span className="price-card__badge">Paling Hemat</span>}
+                  <h3 className="price-card__name">{tier.label}</h3>
+                  <p className="price-card__price">{formatRupiah(tier.price)}<small>{tier.unit}</small></p>
+                  <p className="price-card__note">{tier.note}</p>
+                  <ul className="price-card__list" role="list">
+                    {facilities.map((facility) => (
+                      <li key={facility}><Icon name="check" />{facility}</li>
+                    ))}
+                  </ul>
+                  <a className={`btn ${tier.featured ? 'btn--gold' : 'btn--outline'} btn--block`} href="#daftar">
+                    Daftar Sekarang
+                  </a>
+                </article>
+              ))}
+            </div>
+
+            <div className="payment-card">
+              <div className="payment-card__icon"><Icon name="sparkles" /></div>
+              <div>
+                <h3>Cara Pembayaran</h3>
+                <p>
+                  Transfer ke rekening <strong>{payment.bank}</strong>{' '}
+                  <strong className="payment-card__number">{payment.accountNumber}</strong>{' '}
+                  a.n. <strong>{payment.accountHolder}</strong>. Konfirmasi pembayaran
+                  melalui WhatsApp panitia di <strong>{contact.whatsapp}</strong>.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ============ PEMATERI ============ */}
+        <section className="section" id="pemateri" aria-labelledby="pemateri-title">
+          <div className="container">
+            <div className="section-heading section-heading--center">
+              <p className="section-heading__eyebrow">Narasumber</p>
+              <h2 className="section-heading__title" id="pemateri-title">Pengisi Acara</h2>
+              <p className="section-heading__desc">Belajar langsung dari praktisi yang mendampingi perguruan tinggi dalam penjaminan mutu.</p>
+            </div>
+
+            <div className="speaker-grid">
+              {speakers.map((speaker) => (
+                <article className="speaker-card" key={speaker.name}>
+                  <div className="speaker-card__portrait" aria-hidden="true">
+                    <span>{speaker.initials}</span>
+                  </div>
+                  <div className="speaker-card__body">
+                    <p className="speaker-card__role">{speaker.role}</p>
+                    <h3>{speaker.name}</h3>
+                    <p className="speaker-card__bio">{speaker.bio}</p>
+                    <ul className="speaker-card__topics" role="list">
+                      {speaker.topics.map((topic) => <li key={topic}>{topic}</li>)}
+                    </ul>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ============ MANFAAT ============ */}
+        <section className="section section--muted" id="manfaat" aria-labelledby="manfaat-title">
+          <div className="container">
+            <div className="section-heading section-heading--center">
+              <p className="section-heading__eyebrow">Dampak bagi Peserta</p>
+              <h2 className="section-heading__title" id="manfaat-title">Kegunaan Mengikuti Pelatihan</h2>
+              <p className="section-heading__desc">Bukan sekadar teori — peserta pulang dengan kerangka kerja yang bisa langsung diterapkan.</p>
+            </div>
+
+            <div className="benefit-grid">
+              {benefits.map((benefit, index) => (
+                <article className="benefit-card" key={benefit.title}>
+                  <span className="benefit-card__index">0{index + 1}</span>
+                  <span className="benefit-card__icon"><Icon name={benefit.icon} /></span>
+                  <h3>{benefit.title}</h3>
+                  <p>{benefit.description}</p>
+                </article>
+              ))}
+            </div>
+
+            <div className="facility-strip">
+              <span className="facility-strip__label">Fasilitas peserta:</span>
+              {facilities.map((facility) => (
+                <span className="facility-strip__item" key={facility}>
+                  <Icon name="check" />{facility}
+                </span>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ============ AGENDA ============ */}
+        <section className="section" id="agenda" aria-labelledby="agenda-title">
+          <div className="container">
+            <div className="section-heading section-heading--center">
+              <p className="section-heading__eyebrow">Rangkaian Acara</p>
+              <h2 className="section-heading__title" id="agenda-title">Agenda Pelatihan</h2>
+              <p className="section-heading__desc">Gambaran alur sesi selama kurang lebih dua jam.</p>
+            </div>
+
+            <ol className="timeline">
+              {agenda.map((item, index) => (
+                <li className="timeline__item" key={item.time}>
+                  <span className="timeline__marker" aria-hidden="true">{index + 1}</span>
+                  <span className="timeline__time">{item.time}</span>
+                  <div className="timeline__content">
+                    <h3>{item.title}</h3>
+                    <p>{item.description}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </section>
+
+        {/* ============ FORM PENDAFTARAN ============ */}
+        <section className="section section--register" id="daftar" aria-labelledby="daftar-title">
+          <div className="container register-grid">
+            <div className="register-aside">
+              <p className="section-heading__eyebrow">Kuota Terbatas</p>
+              <h2 className="section-heading__title" id="daftar-title">Daftar Sekarang</h2>
+              <p className="register-aside__desc">
+                Isi formulir berikut dengan data yang benar. Panitia akan menghubungi Anda
+                untuk konfirmasi pembayaran dan pengiriman link Zoom.
+              </p>
+
+              <div className="register-aside__steps">
+                {[
+                  'Isi formulir pendaftaran',
+                  'Transfer ke rekening BCA',
+                  'Konfirmasi via WhatsApp',
+                  'Terima link Zoom & materi',
+                ].map((step, index) => (
+                  <div className="register-step" key={step}>
+                    <span>{index + 1}</span>
+                    <p>{step}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="register-aside__contact">
+                <span className="register-aside__contact-label">Hubungi panitia</span>
+                <a href={contact.whatsappUrl} target="_blank" rel="noopener noreferrer">
+                  <Icon name="whatsapp" /> {contact.whatsapp}
+                </a>
+                <a href={contact.instagramUrl} target="_blank" rel="noopener noreferrer">
+                  <Icon name="instagram" /> {contact.instagram}
+                </a>
+              </div>
+            </div>
+
+            <div className="register-form-card">
+              <div className="register-form-card__head">
+                <h3>Formulir Pendaftaran</h3>
+                <p>Semua field bertanda * wajib diisi.</p>
+              </div>
+              <RegistrationForm />
+            </div>
+          </div>
+        </section>
+
+        {/* ============ FAQ ============ */}
+        <section className="section" id="faq" aria-labelledby="faq-title">
+          <div className="container faq-grid">
+            <div className="faq-intro">
+              <p className="section-heading__eyebrow">Pertanyaan Umum</p>
+              <h2 className="section-heading__title" id="faq-title">Hal yang Sering Ditanyakan</h2>
+              <p className="section-heading__desc">
+                Masih ragu? Hubungi panitia melalui WhatsApp dan kami akan dengan senang hati membantu.
+              </p>
+              <a className="btn btn--outline" href={contact.whatsappUrl} target="_blank" rel="noopener noreferrer">
+                <Icon name="whatsapp" /> Hubungi Panitia
+              </a>
+            </div>
+            <EventFAQ />
+          </div>
+        </section>
+      </main>
+
+      <footer className="site-footer">
+        <div className="container site-footer__inner">
+          <div className="site-footer__brand">
+            <span className="brand__mark" aria-hidden="true">PI</span>
+            <div>
+              <strong>{event.organizerShort}</strong>
+              <p>Elevating People</p>
+            </div>
+          </div>
+          <p className="site-footer__copy">© 2026 {event.organizer}. Seluruh hak cipta dilindungi.</p>
+          <div className="site-footer__links">
+            <a href="/event/sertifikat"><Icon name="check" /> E-Sertifikat</a>
+            <a href={contact.instagramUrl} target="_blank" rel="noopener noreferrer"><Icon name="instagram" /> {contact.instagram}</a>
+            <a href={`mailto:${contact.email}`}><Icon name="mail" /> Email panitia</a>
+          </div>
+        </div>
+      </footer>
+
+      <a className="floating-wa" href={contact.whatsappUrl} target="_blank" rel="noopener noreferrer" aria-label="Hubungi panitia via WhatsApp">
+        <Icon name="whatsapp" />
+      </a>
+    </div>
   );
 }

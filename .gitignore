@@ -36,6 +36,9 @@ yarn-error.log*
 # vercel
 .vercel
 
+# event registrations (data pribadi peserta)
+/data/registrations.json
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
