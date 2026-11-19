@@ -36,8 +36,8 @@ yarn-error.log*
 # vercel
 .vercel
 
-# event registrations (data pribadi peserta)
-/data/registrations.json
+# kredensial aplikasi PHP
+/config.php
 
 # typescript
 *.tsbuildinfo

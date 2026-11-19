@@ -1,3 +1,17 @@
+:root {
+  --font-heading: 'Poppins', 'Segoe UI', Arial, sans-serif;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background-color: #FAF8F5;
+  color: #1f2937;
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
 .event-page {
     --navy-950: #07162e;
     --navy-900: #0b2545;
@@ -24,7 +38,6 @@
     overflow: clip;
 }
 
-@scope (.event-page) {
   .event-page svg { width: 1.25em; height: 1.25em; flex-shrink: 0; }
   .container { width: min(1180px, 100% - 2.5rem); margin-inline: auto; }
 
@@ -308,6 +321,11 @@
   .floating-wa svg { width: 26px; height: 26px; }
 
   /* ---------- Admin & Cek Status ---------- */
+  .btn--danger { border-color: rgba(185,28,28,.45); color: #b91c1c; }
+  .btn--danger:hover { background: rgba(185,28,28,.1); color: #991b1b; }
+  .admin-delete { padding: .35rem .7rem; border: 1px solid rgba(185,28,28,.35); border-radius: 8px; background: transparent; color: #b91c1c; font: inherit; font-size: .74rem; font-weight: 700; cursor: pointer; }
+  .admin-delete:hover { background: rgba(185,28,28,.1); }
+
   .site-header__back { display: inline-flex; align-items: center; gap: .5rem; margin-right: auto; color: var(--white); text-decoration: none; font-size: .85rem; font-weight: 700; }
   .site-header__back svg { width: 18px; height: 18px; color: var(--gold-300); }
   .site-header__back:hover { color: var(--gold-300); }
@@ -396,4 +414,3 @@
     .speaker-card { flex-direction: column; text-align: center; }
     .site-footer__inner { justify-content: center; text-align: center; }
   }
-}
