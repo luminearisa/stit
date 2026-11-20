@@ -357,10 +357,9 @@ $theme = theme_style($event);
         <span class="brand__mark brand__mark--icon" aria-hidden="true"><img src="assets/stit-icon.png" alt=""></span>
         <div><strong>STIT AL WAFI</strong><p>BOGOR</p></div>
       </div>
-      <p class="site-footer__copy">© 2026 <?= e($event['organizer']) ?>. Seluruh hak cipta dilindungi.</p>
+      <p class="site-footer__copy"><?= e(site_credit()) ?></p>
       <div class="site-footer__links">
         <a href="sertifikat.php"><?= icon('check') ?> E-Sertifikat</a>
-        <a href="<?= e($contact['instagram_url']) ?>" target="_blank" rel="noopener noreferrer"><?= icon('instagram') ?> <?= e($contact['instagram']) ?></a>
       </div>
     </div>
   </footer>

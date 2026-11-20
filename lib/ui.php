@@ -6,6 +6,12 @@ function e(?string $value): string
     return htmlspecialchars($value ?? '', ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 }
 
+/** Kredit footer standar untuk semua halaman/event. */
+function site_credit(): string
+{
+    return '© ' . date('Y') . ' STIT AL WAFI BOGOR. Seluruh hak cipta dilindungi.';
+}
+
 /** Ikon SVG inline. */
 function icon(string $name): string
 {

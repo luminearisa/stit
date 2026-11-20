@@ -82,3 +82,4 @@ Peserta isi form
 - Halaman utama (`index.php`) menampilkan kartu event berdasarkan status: Akan Datang, Sedang Berlangsung, dan Sudah Berlangsung. Klik kartu membuka `event.php?slug=...`.
 - Untuk menambah event, tambahkan entri pada `$events` di `lib/data.php` beserta flyer dan data detailnya.
 - Pendaftaran menyimpan `event_slug` pada kolom `source` di database.
+- Kredit footer standar: gunakan `<?= e(site_credit()) ?>` pada halaman baru. Outputnya: `© 2026 STIT AL WAFI BOGOR. Seluruh hak cipta dilindungi.`

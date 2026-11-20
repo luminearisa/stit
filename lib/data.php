@@ -7,7 +7,7 @@ declare(strict_types=1);
 
 $event = [
     'organizer'       => 'Pelita Ilmi × Paracivita',
-    'organizer_short' => 'Pelita Ilmi',
+    'organizer_short' => 'STIT AL WAFI',
     'eyebrow'         => 'Pelatihan Online · Sistem Penjaminan Mutu Internal',
     'title_kicker'    => 'Pelatihan',
     'title_lines'     => [
