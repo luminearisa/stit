@@ -1,0 +1,21 @@
+DirectoryIndex index.php
+Options -MultiViews -Indexes
+RewriteEngine On
+
+# Blokir file sensitif & folder internal
+RewriteRule ^(config|db|router)(\.php)?$ - [F,L,NC]
+RewriteRule ^lib/ - [F,L,NC]
+<FilesMatch "^(config|db)\.php$">
+    Require all denied
+</FilesMatch>
+
+# Kalau ada yang membuka URL dengan .php, arahkan ke URL bersih
+RewriteCond %{THE_REQUEST} \s/+([^\s?]+)\.php[\s?] [NC]
+RewriteRule ^ /%1 [R=301,L]
+
+RewriteRule ^index$ / [R=301,L]
+
+# URL bersih -> file php
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^(.+?)/?$ /$1.php [L]

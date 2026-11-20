@@ -87,7 +87,7 @@
     submitBtn.textContent = 'Mengirim pendaftaran...';
 
     try {
-      const response = await fetch('api/register.php', {
+      const response = await fetch('api/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -137,7 +137,7 @@
     button.textContent = 'Mencari data...';
 
     try {
-      const response = await fetch('api/certificate.php', {
+      const response = await fetch('api/certificate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ whatsapp: input.value }),
@@ -154,6 +154,8 @@
       }
 
       currentRecord = result.record;
+      if (result.event) window.EVENT_DATA = result.event;
+      if (result.certificate) window.EVENT_CERTIFICATE = result.certificate;
       currentSvg = buildCertificateSvg(currentRecord);
       renderCertificate(currentRecord, currentSvg);
       resultEl.hidden = false;
@@ -213,8 +215,9 @@ function buildCertificateSvg(record) {
   const name = escapeXml(record.name);
   const institution = escapeXml(record.institution);
   const titles = event.title_lines.map((line) => escapeXml(line.text));
-  const number = escapeXml(`SPMI-PI/${new Date().getFullYear()}/${String(record.id).slice(0, 8).toUpperCase()}`);
+  const number = escapeXml(`${config.prefix || 'SPMI-PI'}/${new Date().getFullYear()}/${String(record.id).slice(0, 8).toUpperCase()}`);
   const date = escapeXml(event.date);
+  const venue = escapeXml(event.venue || 'Zoom Meeting');
 
   return `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="850" viewBox="0 0 1200 850">
   <defs>
@@ -234,9 +237,9 @@ function buildCertificateSvg(record) {
   <text x="600" y="435" text-anchor="middle" font-family="Georgia, serif" font-size="28" font-weight="bold" fill="#123257">${titles[0] || ''}</text>
   <text x="600" y="475" text-anchor="middle" font-family="Georgia, serif" font-size="23" fill="#123257">${titles[1] || ''}</text>
   <text x="600" y="525" text-anchor="middle" font-family="Arial, sans-serif" font-size="17" fill="#64748b">${institution}</text>
-  <rect x="350" y="556" width="500" height="68" rx="8" fill="#ffffff" stroke="#c5a059" stroke-width="1"/>
+  <rect x="230" y="556" width="740" height="68" rx="8" fill="#ffffff" stroke="#c5a059" stroke-width="1"/>
   <text x="600" y="586" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#64748b">Diselenggarakan pada</text>
-  <text x="600" y="611" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#0b2545">${date} · Zoom Meeting</text>
+  <text x="600" y="611" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#0b2545">${date} · ${venue}</text>
   <line x1="730" y1="700" x2="1070" y2="700" stroke="#0b2545" stroke-width="1.5"/>
   <text x="900" y="730" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#0b2545">${escapeXml(config.signatory_name)}</text>
   <text x="900" y="755" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#64748b">${escapeXml(config.signatory_role)}</text>
@@ -325,7 +328,7 @@ function downloadBlob(blob, filename) {
     if (!username || !password) return;
 
     try {
-      const response = await fetch('api/admin.php', {
+      const response = await fetch('api/admin', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'login', username, password }),
@@ -365,7 +368,7 @@ function downloadBlob(blob, filename) {
   });
 
   async function api(payload) {
-    const response = await fetch('api/admin.php', {
+    const response = await fetch('api/admin', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),

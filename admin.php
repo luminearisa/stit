@@ -25,7 +25,7 @@ $theme = theme_style($event);
 <div class="event-page admin-page" style="<?= $theme ?>">
   <main class="admin-main">
     <div class="container">
-      <a class="admin-back" href="index.php">← Kembali ke halaman event</a>
+      <a class="admin-back" href="/">← Kembali ke halaman event</a>
       <p class="section-heading__eyebrow">Panel Internal</p>
       <h1 class="section-heading__title">Data Pendaftar Pelatihan</h1>
       <p class="section-heading__desc">Kelola pendaftaran, cek status pembayaran, dan unduh data peserta.</p>

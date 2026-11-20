@@ -52,7 +52,7 @@ export default function Navbar() {
         { name: 'Program Studi', href: '/#prodi' },
         { name: 'Dosen', href: '/#dosen' },
         { name: 'Akreditasi', href: '/akreditasi' },
-        { name: 'Event', href: '/event' },
+        { name: 'Event', href: '/', newTab: true },
         { name: 'Repository', href: '/repository' },
         { name: 'Jurnal', href: 'https://alwafi.ac.id/journal/index.php/stit' },
         { name: 'Berita', href: 'https://alwafi.ac.id/news/' },
@@ -163,6 +163,8 @@ export default function Navbar() {
                                     <Link
                                         key={link.name}
                                         href={link.href}
+                                        target={link.newTab ? '_blank' : undefined}
+                                        rel={link.newTab ? 'noopener noreferrer' : undefined}
                                         className="relative px-4 py-2 text-sm font-medium text-stone-700 hover:text-gold transition-all duration-200 rounded-lg hover:bg-stone-100/80 group"
                                     >
                                         <span className="relative z-10">{link.name}</span>
@@ -247,6 +249,8 @@ export default function Navbar() {
                                     <Link
                                         key={link.name}
                                         href={link.href}
+                                        target={link.newTab ? '_blank' : undefined}
+                                        rel={link.newTab ? 'noopener noreferrer' : undefined}
                                         onClick={() => {
                                             setIsMenuOpen(false);
                                             setOpenDropdown(null);

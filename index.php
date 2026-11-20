@@ -30,7 +30,7 @@ foreach ($events as $item) {
 <div class="event-page listing-page" style="<?= $theme ?>">
   <header class="site-header" id="site-header">
     <div class="container site-header__inner">
-      <a class="brand" href="index.php" aria-label="STIT Al Wafi Bogor">
+      <a class="brand" href="/" aria-label="STIT Al Wafi Bogor">
         <span class="brand__mark brand__mark--icon" aria-hidden="true"><img src="assets/stit-icon.png" alt=""></span>
         <span class="brand__text">
           <strong class="brand__name">STIT AL WAFI</strong>
@@ -39,8 +39,8 @@ foreach ($events as $item) {
       </a>
       <nav class="site-header__desktop" aria-label="Navigasi utama">
         <ul class="nav" role="list">
-          <li><a class="nav__link nav__link--active" href="index.php">Event</a></li>
-          <li><a class="nav__link" href="sertifikat.php">E-Sertifikat</a></li>
+          <li><a class="nav__link nav__link--active" href="/">Event</a></li>
+          <li><a class="nav__link" href="sertifikat">E-Sertifikat</a></li>
           <li><a class="nav__link" href="#kontak">Kontak</a></li>
         </ul>
       </nav>
@@ -52,8 +52,8 @@ foreach ($events as $item) {
     <div class="mobile-menu" id="mobile-menu" hidden>
       <div class="container">
         <ul class="nav nav--mobile" role="list">
-          <li><a class="nav__link" href="index.php">Event</a></li>
-          <li><a class="nav__link" href="sertifikat.php">E-Sertifikat</a></li>
+          <li><a class="nav__link" href="/">Event</a></li>
+          <li><a class="nav__link" href="sertifikat">E-Sertifikat</a></li>
           <li><a class="nav__link" href="#kontak">Kontak</a></li>
         </ul>
       </div>
@@ -100,7 +100,7 @@ foreach ($events as $item) {
             <?php else: ?>
               <div class="event-grid">
                 <?php foreach ($items as $item): ?>
-                  <a class="event-card" href="event.php?slug=<?= e($item['slug']) ?>">
+                  <a class="event-card" href="event?slug=<?= e($item['slug']) ?>">
                     <div class="event-card__thumb">
                       <img src="<?= e($item['flyer']) ?>" alt="Flyer <?= e($item['title']) ?>" loading="lazy">
                       <span class="event-card__badge event-card__badge--<?= event_status($item) ?>"><?= e(event_status_label(event_status($item))) ?></span>
@@ -130,7 +130,7 @@ foreach ($events as $item) {
         </div>
         <div class="contact-band__actions">
           <a class="btn btn--gold" href="https://wa.me/<?= e($contact['whatsapp_digits']) ?>" target="_blank" rel="noopener noreferrer"><?= icon('whatsapp') ?> <?= e($contact['whatsapp']) ?></a>
-          <a class="btn btn--outline" href="sertifikat.php"><?= icon('check') ?> Cek E-Sertifikat</a>
+          <a class="btn btn--outline" href="sertifikat"><?= icon('check') ?> Cek E-Sertifikat</a>
         </div>
       </div>
     </section>
@@ -144,7 +144,7 @@ foreach ($events as $item) {
       </div>
       <p class="site-footer__copy"><?= e(site_credit()) ?></p>
       <div class="site-footer__links">
-        <a href="sertifikat.php"><?= icon('check') ?> E-Sertifikat</a>
+        <a href="sertifikat"><?= icon('check') ?> E-Sertifikat</a>
       </div>
     </div>
   </footer>

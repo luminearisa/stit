@@ -16,13 +16,28 @@ if (!$record) {
     json_response(['ok' => false, 'error' => 'Nomor WhatsApp tidak ditemukan dalam data pendaftaran.'], 404);
 }
 
-if (!in_array($record['status'], $certificate['eligible_statuses'], true)) {
+// Data event mengikuti slug yang tersimpan saat pendaftaran.
+$detail = get_event((string) ($record['source'] ?? '')) ?? $event;
+$cert = $detail['certificate'] ?? $certificate;
+$contactInfo = $detail['contact'] ?? $contact;
+
+if (!in_array($record['status'], $cert['eligible_statuses'], true)) {
     json_response([
         'ok' => false,
         'error' => 'Sertifikat belum tersedia. Status pendaftaran Anda: '
             . ($status_labels[$record['status']] ?? $record['status'])
-            . '. Silakan hubungi panitia di 0813 9166 0301 untuk konfirmasi.',
+            . '. Silakan hubungi panitia di ' . $contactInfo['whatsapp'] . ' untuk konfirmasi.',
     ], 403);
 }
 
-json_response(['ok' => true, 'record' => to_frontend_row($record)]);
+json_response([
+    'ok' => true,
+    'record' => to_frontend_row($record),
+    'event' => [
+        'title_lines' => $detail['title_lines'] ?? $event['title_lines'],
+        'date'        => $detail['date'] ?? $event['date'],
+        'organizer'   => $detail['organizer'] ?? $event['organizer'],
+        'venue'       => $detail['location'] ?? $event['location'],
+    ],
+    'certificate' => $cert,
+]);

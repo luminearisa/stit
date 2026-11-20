@@ -20,6 +20,7 @@ $theme = theme_style($event);
         'title_lines' => $event['title_lines'],
         'date' => $event['date'],
         'organizer' => $event['organizer'],
+        'venue' => $event['location'],
     ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
     window.EVENT_CERTIFICATE = <?= json_encode($certificate, JSON_UNESCAPED_UNICODE) ?>;
   </script>
@@ -28,7 +29,7 @@ $theme = theme_style($event);
 <div class="event-page" style="<?= $theme ?>">
   <header class="site-header">
     <div class="container site-header__inner">
-      <a class="site-header__back" href="index.php"><?= icon('back') ?> Kembali ke halaman event</a>
+      <a class="site-header__back" href="/"><?= icon('back') ?> Kembali ke halaman event</a>
       <span class="site-header__back-title">E-Sertifikat</span>
     </div>
   </header>

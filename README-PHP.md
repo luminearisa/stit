@@ -83,3 +83,12 @@ Peserta isi form
 - Untuk menambah event, tambahkan entri pada `$events` di `lib/data.php` beserta flyer dan data detailnya.
 - Pendaftaran menyimpan `event_slug` pada kolom `source` di database.
 - Kredit footer standar: gunakan `<?= e(site_credit()) ?>` pada halaman baru. Outputnya: `© 2026 STIT AL WAFI BOGOR. Seluruh hak cipta dilindungi.`
+
+- Event baru ditambahkan sebagai entri `$events` di `lib/data.php` lengkap dengan data detail (speakers, price_tiers, facilities, benefits, agenda, faqs, contact, certificate). Contoh: `ami-workshop`.
+- Sertifikat mengikuti event tempat peserta mendaftar (slug disimpan di kolom `source`).
+
+## URL bersih (tanpa .php)
+
+- Di hosting aktifkan `mod_rewrite` dan upload `.htaccess` yang sudah disediakan. Semua tautan memakai URL bersih: `/`, `/event?slug=...`, `/sertifikat`, `/admin`, `/api/register`.
+- Akses langsung ke `config.php`, `db.php`, `router.php`, dan folder `lib/` diblokir.
+- Untuk uji lokal: `php -S 127.0.0.1:8099 router.php`

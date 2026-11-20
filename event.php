@@ -8,11 +8,22 @@ require_once __DIR__ . '/lib/ui.php';
 $slug = isset($_GET['slug']) && is_string($_GET['slug']) ? $_GET['slug'] : '';
 $detail = get_event($slug);
 if (!$detail) {
-    header('Location: index.php');
+    header('Location: /');
     exit;
 }
 $event = array_merge($event, $detail);
-$nav_links = array_merge([['href' => 'index.php', 'label' => 'Semua Event']], $nav_links);
+
+// Data detail mengikuti event yang dipilih (fallback ke data default).
+$speakers    = $detail['speakers'] ?? $speakers;
+$price_tiers = $detail['price_tiers'] ?? $price_tiers;
+$facilities  = $detail['facilities'] ?? $facilities;
+$benefits    = $detail['benefits'] ?? $benefits;
+$agenda      = $detail['agenda'] ?? $agenda;
+$faqs        = $detail['faqs'] ?? $faqs;
+$contact     = $detail['contact'] ?? $contact;
+$certificate = $detail['certificate'] ?? $certificate;
+
+$nav_links = array_merge([['href' => '/', 'label' => 'Semua Event']], $nav_links);
 
 function title_html(array $line): string
 {
@@ -42,7 +53,7 @@ $theme = theme_style($event);
   <!-- ============ HEADER ============ -->
   <header class="site-header" id="site-header">
     <div class="container site-header__inner">
-      <a class="brand" href="index.php" aria-label="STIT Al Wafi Bogor">
+      <a class="brand" href="/" aria-label="STIT Al Wafi Bogor">
         <span class="brand__mark brand__mark--icon" aria-hidden="true"><img src="assets/stit-icon.png" alt=""></span>
         <span class="brand__text">
           <strong class="brand__name">STIT AL WAFI</strong>
@@ -56,7 +67,7 @@ $theme = theme_style($event);
           <?php endforeach; ?>
         </ul>
       </nav>
-      <a class="btn btn--gold nav__cta" href="sertifikat.php">E-Sertifikat</a>
+      <a class="btn btn--gold nav__cta" href="sertifikat">E-Sertifikat</a>
       <button type="button" class="site-header__toggle" id="nav-toggle" aria-expanded="false" aria-controls="mobile-menu" aria-label="Buka menu navigasi">
         <?= icon('chevron') ?>
       </button>
@@ -83,7 +94,7 @@ $theme = theme_style($event);
           <h1 class="hero__title" id="hero-title">
             <span class="hero__title-kicker"><?= e($event['title_kicker']) ?></span>
             <?php foreach ($event['title_lines'] as $line): ?>
-              <span class="<?= $line['tone'] === 'accent' ? 'hero__title-accent' : 'hero__title-main' ?>"><?= title_html($line) ?></span>
+              <span class="<?= ($line['tone'] ?? 'default') === 'accent' ? 'hero__title-accent' : 'hero__title-main' ?>"><?= title_html($line) ?></span>
             <?php endforeach; ?>
           </h1>
           <p class="hero__subtitle"><?= e($event['subtitle']) ?></p>
@@ -121,7 +132,7 @@ $theme = theme_style($event);
       <div class="container">
         <div class="section-heading">
           <p class="section-heading__eyebrow">Tentang Acara</p>
-          <h2 class="section-heading__title" id="informasi-title">Informasi Pelatihan</h2>
+          <h2 class="section-heading__title" id="informasi-title"><?= e($event['info_title']) ?></h2>
           <p class="section-heading__desc"><?= e($event['description']) ?></p>
         </div>
         <div class="info-grid">
@@ -129,7 +140,7 @@ $theme = theme_style($event);
           $info_items = [
               ['calendar', 'Tanggal', $event['date']],
               ['clock', 'Waktu', $event['time']],
-              ['video', 'Format', 'Online · ' . $event['platform']],
+              ['video', 'Format', $event['platform']],
               ['users', 'Penyelenggara', $event['organizer']],
           ];
           foreach ($info_items as [$ic, $label, $value]): ?>
@@ -144,7 +155,7 @@ $theme = theme_style($event);
         </div>
         <div class="info-note">
           <?= icon('sparkles') ?>
-          <p><strong>Siapa yang sebaiknya mengikuti?</strong> Pimpinan, dosen, tenaga kependidikan, unit penjaminan mutu, serta siapa pun yang terlibat dalam penyusunan dan pengelolaan SPMI di perguruan tinggi.</p>
+          <p><strong>Siapa yang sebaiknya mengikuti?</strong> <?= e($event['audience']) ?></p>
         </div>
       </div>
     </section>
@@ -155,12 +166,12 @@ $theme = theme_style($event);
         <div class="section-heading section-heading--center">
           <p class="section-heading__eyebrow">Investasi Ilmu</p>
           <h2 class="section-heading__title" id="biaya-title">Biaya Pendaftaran</h2>
-          <p class="section-heading__desc">Pilih paket yang sesuai. Pendaftaran kelompok lebih hemat per peserta.</p>
+          <p class="section-heading__desc"><?= e($event['pricing_note']) ?></p>
         </div>
         <div class="pricing-grid">
           <?php foreach ($price_tiers as $tier): ?>
             <article class="price-card<?= $tier['featured'] ? ' price-card--featured' : '' ?>">
-              <?php if ($tier['featured']): ?><span class="price-card__badge">Paling Hemat</span><?php endif; ?>
+              <?php if ($tier['featured']): ?><span class="price-card__badge"><?= e($tier['featured_label'] ?? 'Paling Hemat') ?></span><?php endif; ?>
               <h3 class="price-card__name"><?= e($tier['label']) ?></h3>
               <p class="price-card__price"><?= e(rupiah($tier['price'])) ?><small><?= e($tier['unit']) ?></small></p>
               <p class="price-card__note"><?= e($tier['note']) ?></p>
@@ -214,7 +225,7 @@ $theme = theme_style($event);
       <div class="container">
         <div class="section-heading section-heading--center">
           <p class="section-heading__eyebrow">Dampak bagi Peserta</p>
-          <h2 class="section-heading__title" id="manfaat-title">Kegunaan Mengikuti Pelatihan</h2>
+          <h2 class="section-heading__title" id="manfaat-title"><?= e($event['benefits_title']) ?></h2>
           <p class="section-heading__desc">Bukan sekadar teori — peserta pulang dengan kerangka kerja yang bisa langsung diterapkan.</p>
         </div>
         <div class="benefit-grid">
@@ -241,8 +252,8 @@ $theme = theme_style($event);
       <div class="container">
         <div class="section-heading section-heading--center">
           <p class="section-heading__eyebrow">Rangkaian Acara</p>
-          <h2 class="section-heading__title" id="agenda-title">Agenda Pelatihan</h2>
-          <p class="section-heading__desc">Gambaran alur sesi selama kurang lebih dua jam.</p>
+          <h2 class="section-heading__title" id="agenda-title"><?= e($event['agenda_title']) ?></h2>
+          <p class="section-heading__desc"><?= e($event['agenda_note']) ?></p>
         </div>
         <ol class="timeline">
           <?php foreach ($agenda as $index => $item): ?>
@@ -263,7 +274,7 @@ $theme = theme_style($event);
     <section class="section section--register" id="daftar" aria-labelledby="daftar-title">
       <div class="container register-grid">
         <div class="register-aside">
-          <p class="section-heading__eyebrow">Kuota Terbatas</p>
+          <p class="section-heading__eyebrow"><?= e($event['register_label']) ?></p>
           <h2 class="section-heading__title" id="daftar-title">Daftar Sekarang</h2>
           <p class="register-aside__desc">Isi formulir berikut dengan data yang benar. Panitia akan menghubungi Anda melalui WhatsApp untuk konfirmasi pembayaran.</p>
           <div class="register-aside__steps">
@@ -324,7 +335,7 @@ $theme = theme_style($event);
             <h3>Pendaftaran Berhasil!</h3>
             <p>Data pendaftaran Anda telah tersimpan. Panitia akan menghubungi Anda melalui WhatsApp untuk konfirmasi pembayaran.</p>
             <p class="form-success__id" id="form-success-id"></p>
-            <a class="btn btn--outline" href="sertifikat.php">Cek &amp; Unduh E-Sertifikat</a>
+            <a class="btn btn--outline" href="sertifikat">Cek &amp; Unduh E-Sertifikat</a>
           </div>
         </div>
       </div>
@@ -359,7 +370,7 @@ $theme = theme_style($event);
       </div>
       <p class="site-footer__copy"><?= e(site_credit()) ?></p>
       <div class="site-footer__links">
-        <a href="sertifikat.php"><?= icon('check') ?> E-Sertifikat</a>
+        <a href="sertifikat"><?= icon('check') ?> E-Sertifikat</a>
       </div>
     </div>
   </footer>
