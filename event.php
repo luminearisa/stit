@@ -22,6 +22,7 @@ $agenda      = $detail['agenda'] ?? $agenda;
 $faqs        = $detail['faqs'] ?? $faqs;
 $contact     = $detail['contact'] ?? $contact;
 $certificate = $detail['certificate'] ?? $certificate;
+$payment     = $detail['payment'] ?? $payment;
 
 $nav_links = array_merge([['href' => '/', 'label' => 'Semua Event']], $nav_links);
 

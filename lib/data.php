@@ -191,6 +191,7 @@ $events = [
         'agenda'      => $agenda,
         'faqs'         => $faqs,
         'contact'      => $contact,
+        'payment'      => $payment,
         'certificate'  => $certificate,
         'audience'     => 'Pimpinan, dosen, tenaga kependidikan, unit penjaminan mutu, serta siapa pun yang terlibat dalam penyusunan dan pengelolaan SPMI di perguruan tinggi.',
         'pricing_note' => 'Pilih paket yang sesuai. Pendaftaran kelompok lebih hemat per peserta.',
@@ -290,6 +291,11 @@ $events = [
             'whatsapp_digits'=> '6289527217662',
             'instagram'      => '@stitalwafiofficial',
             'instagram_url'  => 'https://instagram.com/stitalwafiofficial',
+        ],
+        'payment'     => [
+            'bank'           => 'BSI',
+            'account_number' => '8888441116',
+            'account_holder' => 'BSI STIT AL Wafi',
         ],
         'certificate' => [
             'prefix'           => 'AMI',

@@ -92,3 +92,5 @@ Peserta isi form
 - Di hosting aktifkan `mod_rewrite` dan upload `.htaccess` yang sudah disediakan. Semua tautan memakai URL bersih: `/`, `/event?slug=...`, `/sertifikat`, `/admin`, `/api/register`.
 - Akses langsung ke `config.php`, `db.php`, `router.php`, dan folder `lib/` diblokir.
 - Untuk uji lokal: `php -S 127.0.0.1:8099 router.php`
+
+- Rekening default untuk event baru adalah BSI 8888441116 a.n. BSI STIT AL Wafi. Event lama (SPMI) tetap memakai BCA 4452227871.
