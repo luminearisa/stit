@@ -7,7 +7,8 @@ Versi ini **tidak membutuhkan Node.js**. Upload file-file di root ini ke server 
 ## Struktur
 
 ```
-index.php              Halaman event organizer (root → /)
+index.php              Halaman daftar event (kartu: berlangsung, akan datang, selesai)
+event.php              Halaman lengkap satu event (event.php?slug=spmi-pi)
 admin.php              Panel admin (login user/pass, tabel, CSV)
 sertifikat.php         Cek & unduh e-sertifikat
 cek.php                Redirect lama → sertifikat.php
@@ -15,7 +16,7 @@ config.php             Kredensial database & admin (jangan di-commit)
 config.example.php     Template config.php
 db.php                 Koneksi PDO + pembuatan tabel otomatis
 lib/
-├── data.php           Semua data event & field pendaftaran
+├── data.php           Daftar event, data event & field pendaftaran
 ├── registrations.php  Validasi, simpan, cari, update status, CSV
 └── ui.php             Helper escape, ikon, tema warna
 api/
@@ -53,7 +54,8 @@ assets/
    Tabel `registrations` dibuat **otomatis** saat halaman/API pertama diakses.
 
 4. Buka:
-   - Event: `https://domain.com/`
+   - Daftar event: `https://domain.com/`
+   - Detail event: `https://domain.com/event.php?slug=spmi-pi`
    - Admin: `https://domain.com/admin.php`
    - Sertifikat: `https://domain.com/sertifikat.php`
 
@@ -76,3 +78,7 @@ Peserta isi form
 - Login admin memakai **username + password** dari `config.php`; sesi disimpan server memakai cookie PHP. Password bawaan: `admin` / `admin123` — **ganti di produksi**.
 - Panel admin menyediakan **Hapus** per pendaftar dan **Hapus Semua** untuk mereset data saat event berikutnya. Keduanya meminta konfirmasi sebelum menghapus.
 - Sertifikat masih memakai desain bawaan; rencana berikutnya memakai **template PNG/JPG milik pemilik** dengan nama peserta yang diisi otomatis.
+
+- Halaman utama (`index.php`) menampilkan kartu event berdasarkan status: Akan Datang, Sedang Berlangsung, dan Sudah Berlangsung. Klik kartu membuka `event.php?slug=...`.
+- Untuk menambah event, tambahkan entri pada `$events` di `lib/data.php` beserta flyer dan data detailnya.
+- Pendaftaran menyimpan `event_slug` pada kolom `source` di database.

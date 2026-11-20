@@ -152,3 +152,72 @@ function rupiah(int $value): string
 {
     return 'Rp ' . number_format($value, 0, ',', '.');
 }
+
+/**
+ * Daftar semua event. halaman index.php menampilkan kartu-kartu dari sini,
+ * lalu event.php?slug=... menampilkan halaman lengkap event yang dipilih.
+ *
+ * Untuk menambah event baru, copy entri di bawah lalu ubah slug, judul,
+ * tanggal, flyer, dan (bila perlu) data detail di variabel terkait.
+ */
+$events = [
+    [
+        'slug'        => 'spmi-pi',
+        'title'       => 'Pelatihan Strategi Menyusun Perangkat SPMI',
+        'short_title' => 'Strategi Menyusun Perangkat SPMI',
+        'summary'     => 'Panduan praktis menyusun perangkat SPMI yang komprehensif, terintegrasi, dan siap audit — langsung dari praktisi penjaminan mutu.',
+        'category'    => 'Pelatihan · Online',
+        'date'        => $event['date'],
+        'time'        => $event['time'],
+        'start_at'    => '2026-11-20T19:00:00+07:00',
+        'end_at'      => '2026-11-20T21:00:00+07:00',
+        'flyer'       => $event['flyer_image'],
+        'theme'       => $event['theme'],
+        // Isi 'upcoming' | 'ongoing' | 'past' untuk memaksa status,
+        // atau biarkan null agar dihitung otomatis dari tanggal.
+        'status'      => null,
+    ],
+];
+
+function get_event(string $slug): ?array
+{
+    global $events;
+    foreach ($events as $item) {
+        if ($item['slug'] === $slug) {
+            return $item;
+        }
+    }
+    return null;
+}
+
+/** Status event: upcoming | ongoing | past. */
+function event_status(array $item): string
+{
+    if (!empty($item['status']) && in_array($item['status'], ['upcoming', 'ongoing', 'past'], true)) {
+        return $item['status'];
+    }
+
+    $now = time();
+    $start = strtotime((string) ($item['start_at'] ?? '')) ?: PHP_INT_MAX;
+    $endRaw = strtotime((string) ($item['end_at'] ?? ''));
+    $end = $endRaw ?: $start;
+
+    if ($now < $start) return 'upcoming';
+    if ($now > $end) return 'past';
+    return 'ongoing';
+}
+
+function event_status_label(string $status): string
+{
+    return [
+        'upcoming' => 'Akan Datang',
+        'ongoing'  => 'Sedang Berlangsung',
+        'past'     => 'Sudah Berlangsung',
+    ][$status] ?? $status;
+}
+
+function event_date_short(array $item): string
+{
+    $timestamp = strtotime((string) ($item['start_at'] ?? ''));
+    return $timestamp ? date('d M Y', $timestamp) : $item['date'];
+}

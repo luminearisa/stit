@@ -76,7 +76,7 @@ function validate_registration(array $input): array
     return ['ok' => true, 'value' => $values];
 }
 
-function save_registration(array $values): array
+function save_registration(array $values, string $source = 'event-page'): array
 {
     ensure_schema();
 
@@ -97,7 +97,7 @@ function save_registration(array $values): array
     $params = $values;
     $params['id'] = $id;
     $params['created_at'] = date('Y-m-d H:i:s');
-    $params['source'] = 'event-page';
+    $params['source'] = $source !== '' ? $source : 'event-page';
     $stmt->execute($params);
 
     return find_by_id($id) ?? [

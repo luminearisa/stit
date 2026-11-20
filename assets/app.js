@@ -278,6 +278,27 @@ function downloadBlob(blob, filename) {
 }
 
 /* =========================================================
+   Filter daftar event
+   ========================================================= */
+(function initEventFilters() {
+  const tabs = document.getElementById('filter-tabs');
+  if (!tabs) return;
+
+  const buttons = [...tabs.querySelectorAll('[data-filter]')];
+  const sections = [...document.querySelectorAll('.event-section[data-group]')];
+
+  buttons.forEach((button) => {
+    button.addEventListener('click', () => {
+      const filter = button.dataset.filter;
+      buttons.forEach((b) => b.classList.toggle('filter-tab--active', b === button));
+      sections.forEach((section) => {
+        section.hidden = filter !== 'all' && section.dataset.group !== filter;
+      });
+    });
+  });
+})();
+
+/* =========================================================
    Panel admin
    ========================================================= */
 (function initAdmin() {

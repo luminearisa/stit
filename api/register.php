@@ -19,7 +19,10 @@ if (!$validated['ok']) {
 }
 
 try {
-    $record = save_registration($validated['value']);
+    $eventSlug = isset($input['event_slug']) && is_string($input['event_slug'])
+        ? substr(trim($input['event_slug']), 0, 80)
+        : '';
+    $record = save_registration($validated['value'], $eventSlug);
     json_response([
         'ok'      => true,
         'id'      => $record['id'],
