@@ -63,8 +63,7 @@ $theme = theme_style($event);
           <dl class="check-result__grid" id="cert-grid"></dl>
           <div class="certificate-preview" id="cert-preview"></div>
           <div class="certificate-actions">
-            <button class="btn btn--gold" type="button" id="download-png"><?= icon('download') ?> Unduh PNG</button>
-            <button class="btn btn--outline" type="button" id="download-svg"><?= icon('download') ?> Unduh SVG</button>
+            <button class="btn btn--gold" type="button" id="download-png"><?= icon('download') ?> Unduh Sertifikat (PNG)</button>
           </div>
         </div>
       </div>

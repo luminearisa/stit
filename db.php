@@ -74,6 +74,17 @@ function ensure_schema(): void
         ");
         $pdo->exec('CREATE INDEX IF NOT EXISTS idx_whatsapp ON registrations(whatsapp)');
         $pdo->exec('CREATE INDEX IF NOT EXISTS idx_status ON registrations(status)');
+        $pdo->exec("
+            CREATE TABLE IF NOT EXISTS feedback (
+                id TEXT NOT NULL PRIMARY KEY,
+                name TEXT NULL,
+                email TEXT NULL,
+                message TEXT NULL,
+                event_slug TEXT NULL,
+                created_at TEXT NOT NULL
+            )
+        ");
+        $pdo->exec('CREATE INDEX IF NOT EXISTS idx_feedback_event ON feedback(event_slug)');
         return;
     }
 
@@ -94,6 +105,18 @@ function ensure_schema(): void
             source VARCHAR(50) NOT NULL DEFAULT 'event-page',
             INDEX idx_whatsapp (whatsapp),
             INDEX idx_status (status)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    ");
+
+    $pdo->exec("
+        CREATE TABLE IF NOT EXISTS feedback (
+            id VARCHAR(36) NOT NULL PRIMARY KEY,
+            name VARCHAR(200) NULL,
+            email VARCHAR(200) NULL,
+            message TEXT NULL,
+            event_slug VARCHAR(80) NULL,
+            created_at DATETIME NOT NULL,
+            INDEX idx_feedback_event (event_slug)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
     ");
 }

@@ -112,7 +112,7 @@
 })();
 
 /* =========================================================
-   E-Sertifikat
+   E-Sertifikat (template gambar per event)
    ========================================================= */
 (function initCertificate() {
   const form = document.getElementById('certificate-form');
@@ -122,9 +122,87 @@
   const errorEl = document.getElementById('cert-error');
   const noticeEl = document.getElementById('cert-notice');
   const resultEl = document.getElementById('cert-result');
+  const previewEl = document.getElementById('cert-preview');
   const button = document.getElementById('cert-submit');
   let currentRecord = null;
-  let currentSvg = '';
+  let currentCanvas = null;
+
+  function loadImage(src) {
+    return new Promise((resolve, reject) => {
+      const image = new Image();
+      image.onload = () => resolve(image);
+      image.onerror = () => reject(new Error('Gagal memuat template sertifikat.'));
+      image.src = src;
+    });
+  }
+
+  function wrapText(ctx, text, maxWidth) {
+    const words = String(text || '').split(/\s+/);
+    const lines = [];
+    let line = '';
+    words.forEach((word) => {
+      const test = line ? line + ' ' + word : word;
+      if (ctx.measureText(test).width > maxWidth && line) {
+        lines.push(line);
+        line = word;
+      } else {
+        line = test;
+      }
+    });
+    if (line) lines.push(line);
+    return lines;
+  }
+
+  async function buildCertificate(record, template) {
+    const image = await loadImage(template.image);
+    const canvas = document.createElement('canvas');
+    canvas.width = image.naturalWidth;
+    canvas.height = image.naturalHeight;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(image, 0, 0);
+
+    const box = template.name_box || {};
+    const scale = canvas.width / 1200;
+    const fontSize = Math.max(12, Number(box.size || 42) * scale);
+    const color = /^#[0-9a-f]{6}$/i.test(box.color || '') ? box.color : '#0b2545';
+    const align = ['left', 'center', 'right'].includes(box.align) ? box.align : 'center';
+
+    ctx.font = '700 ' + fontSize + 'px Georgia, serif';
+    ctx.fillStyle = color;
+    ctx.textAlign = align;
+    ctx.textBaseline = 'middle';
+
+    const x = canvas.width * (Number(box.x ?? 50) / 100);
+    const y = canvas.height * (Number(box.y ?? 45) / 100);
+    const maxWidth = canvas.width * (Number(box.maxWidth ?? 70) / 100);
+    const lines = wrapText(ctx, record.name, maxWidth);
+    const lineHeight = fontSize * 1.2;
+    const startY = y - ((lines.length - 1) * lineHeight) / 2;
+
+    lines.forEach((text, index) => ctx.fillText(text, x, startY + index * lineHeight));
+    return canvas;
+  }
+
+  function renderDetails(record) {
+    const name = document.getElementById('cert-name');
+    const badge = document.getElementById('cert-badge');
+    const grid = document.getElementById('cert-grid');
+    if (name) name.textContent = record.name;
+    if (badge) badge.textContent = 'Terkonfirmasi';
+    if (grid) {
+      const rows = [
+        ['ID Pendaftaran', record.id],
+        ['Email', record.email],
+        ['Instansi', record.institution],
+        ['Asal Kota/Kabupaten', record.city],
+        ['Jabatan', record.position],
+        ['Waktu Daftar', new Date(record.created_at.replace(' ', 'T')).toLocaleString('id-ID')],
+      ];
+      grid.innerHTML = rows.map(([label, value]) =>
+        `<div><dt>${escapeHtml(label)}</dt><dd>${escapeHtml(value)}</dd></div>`
+      ).join('');
+    }
+  }
 
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
@@ -132,6 +210,7 @@
     noticeEl.hidden = true;
     resultEl.hidden = true;
     currentRecord = null;
+    currentCanvas = null;
 
     button.disabled = true;
     button.textContent = 'Mencari data...';
@@ -153,11 +232,19 @@
         throw new Error(result.error || 'Data pendaftar tidak ditemukan.');
       }
 
+      if (!result.template) {
+        noticeEl.textContent = 'Sertifikat bisa diunduh setelah event selesai';
+        noticeEl.hidden = false;
+        return;
+      }
+
       currentRecord = result.record;
-      if (result.event) window.EVENT_DATA = result.event;
-      if (result.certificate) window.EVENT_CERTIFICATE = result.certificate;
-      currentSvg = buildCertificateSvg(currentRecord);
-      renderCertificate(currentRecord, currentSvg);
+      currentCanvas = await buildCertificate(currentRecord, result.template);
+      renderDetails(currentRecord);
+      previewEl.innerHTML = '';
+      currentCanvas.style.width = '100%';
+      currentCanvas.style.height = 'auto';
+      previewEl.appendChild(currentCanvas);
       resultEl.hidden = false;
     } catch (err) {
       errorEl.textContent = err.message;
@@ -168,30 +255,14 @@
     }
   });
 
-  document.getElementById('download-svg')?.addEventListener('click', () => {
-    if (!currentSvg || !currentRecord) return;
-    downloadBlob(new Blob([currentSvg], { type: 'image/svg+xml;charset=utf-8' }),
-      `e-sertifikat-${slug(currentRecord.name)}.svg`);
-  });
-
   document.getElementById('download-png')?.addEventListener('click', () => {
-    if (!currentSvg || !currentRecord) return;
-    const url = URL.createObjectURL(new Blob([currentSvg], { type: 'image/svg+xml;charset=utf-8' }));
-    const image = new Image();
-    image.onload = () => {
-      const canvas = document.createElement('canvas');
-      canvas.width = 1200;
-      canvas.height = 850;
-      canvas.getContext('2d').drawImage(image, 0, 0);
-      canvas.toBlob((blob) => {
-        if (blob) downloadBlob(blob, `e-sertifikat-${slug(currentRecord.name)}.png`);
-      }, 'image/png');
-      URL.revokeObjectURL(url);
-    };
-    image.onerror = () => { URL.revokeObjectURL(url); };
-    image.src = url;
+    if (!currentCanvas || !currentRecord) return;
+    currentCanvas.toBlob((blob) => {
+      if (blob) downloadBlob(blob, 'e-sertifikat-' + slug(currentRecord.name) + '.png');
+    }, 'image/png');
   });
 })();
+
 
 function slug(name) {
   return String(name).toLowerCase().replace(/[^a-z0-9]/g, '-');
@@ -203,74 +274,6 @@ function escapeHtml(value) {
   })[c]);
 }
 
-function escapeXml(value) {
-  return String(value ?? '').replace(/[<>&"']/g, (c) => ({
-    '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;', "'": '&apos;',
-  })[c]);
-}
-
-function buildCertificateSvg(record) {
-  const config = window.EVENT_CERTIFICATE;
-  const event = window.EVENT_DATA;
-  const name = escapeXml(record.name);
-  const institution = escapeXml(record.institution);
-  const titles = event.title_lines.map((line) => escapeXml(line.text));
-  const number = escapeXml(`${config.prefix || 'SPMI-PI'}/${new Date().getFullYear()}/${String(record.id).slice(0, 8).toUpperCase()}`);
-  const date = escapeXml(event.date);
-  const venue = escapeXml(event.venue || 'Zoom Meeting');
-
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="850" viewBox="0 0 1200 850">
-  <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#fffdf9"/><stop offset="100%" stop-color="#f4ecdd"/></linearGradient>
-    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#a67c1e"/><stop offset="50%" stop-color="#d9b46c"/><stop offset="100%" stop-color="#a67c1e"/></linearGradient>
-  </defs>
-  <rect width="1200" height="850" fill="url(#bg)"/>
-  <rect x="26" y="26" width="1148" height="798" fill="none" stroke="#c5a059" stroke-width="3"/>
-  <rect x="40" y="40" width="1120" height="770" fill="none" stroke="#c5a059" stroke-width="1" opacity="0.55"/>
-  <rect x="520" y="70" width="160" height="5" fill="url(#gold)"/>
-  <text x="600" y="145" text-anchor="middle" font-family="Georgia, serif" font-size="54" letter-spacing="12" fill="#0b2545">SERTIFIKAT</text>
-  <text x="600" y="185" text-anchor="middle" font-family="Arial, sans-serif" font-size="17" letter-spacing="3" fill="#a67c1e">CERTIFICATE OF PARTICIPATION</text>
-  <text x="600" y="245" text-anchor="middle" font-family="Arial, sans-serif" font-size="19" fill="#64748b">Diberikan dengan hormat kepada</text>
-  <text x="600" y="315" text-anchor="middle" font-family="Georgia, serif" font-size="46" font-weight="bold" fill="#0b2545">${name}</text>
-  <line x1="300" y1="335" x2="900" y2="335" stroke="#c5a059" stroke-width="1.5"/>
-  <text x="600" y="385" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#475569">Atas partisipasinya dalam pelatihan</text>
-  <text x="600" y="435" text-anchor="middle" font-family="Georgia, serif" font-size="28" font-weight="bold" fill="#123257">${titles[0] || ''}</text>
-  <text x="600" y="475" text-anchor="middle" font-family="Georgia, serif" font-size="23" fill="#123257">${titles[1] || ''}</text>
-  <text x="600" y="525" text-anchor="middle" font-family="Arial, sans-serif" font-size="17" fill="#64748b">${institution}</text>
-  <rect x="230" y="556" width="740" height="68" rx="8" fill="#ffffff" stroke="#c5a059" stroke-width="1"/>
-  <text x="600" y="586" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#64748b">Diselenggarakan pada</text>
-  <text x="600" y="611" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#0b2545">${date} · ${venue}</text>
-  <line x1="730" y1="700" x2="1070" y2="700" stroke="#0b2545" stroke-width="1.5"/>
-  <text x="900" y="730" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#0b2545">${escapeXml(config.signatory_name)}</text>
-  <text x="900" y="755" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#64748b">${escapeXml(config.signatory_role)}</text>
-  <text x="130" y="750" text-anchor="start" font-family="Arial, sans-serif" font-size="13" fill="#64748b">No. ${number}</text>
-  <text x="130" y="775" text-anchor="start" font-family="Arial, sans-serif" font-size="13" fill="#64748b">${escapeXml(event.organizer)}</text>
-</svg>`;
-}
-
-function renderCertificate(record, svg) {
-  const name = document.getElementById('cert-name');
-  const badge = document.getElementById('cert-badge');
-  const grid = document.getElementById('cert-grid');
-  const preview = document.getElementById('cert-preview');
-  if (name) name.textContent = record.name;
-  if (badge) badge.textContent = 'Terkonfirmasi';
-  if (grid) {
-    const rows = [
-      ['ID Pendaftaran', record.id],
-      ['Email', record.email],
-      ['Instansi', record.institution],
-      ['Asal Kota/Kabupaten', record.city],
-      ['Jabatan', record.position],
-      ['Waktu Daftar', new Date(record.created_at.replace(' ', 'T')).toLocaleString('id-ID')],
-    ];
-    grid.innerHTML = rows.map(([label, value]) =>
-      `<div><dt>${escapeHtml(label)}</dt><dd>${escapeHtml(value)}</dd></div>`
-    ).join('');
-  }
-  if (preview) preview.innerHTML = svg;
-}
-
 function downloadBlob(blob, filename) {
   const url = URL.createObjectURL(blob);
   const anchor = document.createElement('a');
@@ -279,6 +282,47 @@ function downloadBlob(blob, filename) {
   anchor.click();
   URL.revokeObjectURL(url);
 }
+
+/* =========================================================
+   Form saran & masukan
+   ========================================================= */
+(function initFeedbackForm() {
+  const form = document.getElementById('feedback-form');
+  if (!form) return;
+
+  const errorEl = document.getElementById('feedback-error');
+  const successEl = document.getElementById('feedback-success');
+  const button = document.getElementById('feedback-submit');
+
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    errorEl.hidden = true;
+    successEl.hidden = true;
+
+    const payload = Object.fromEntries(new FormData(form).entries());
+    button.disabled = true;
+    button.textContent = 'Mengirim saran...';
+
+    try {
+      const response = await fetch('/api/feedback', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const result = await response.json();
+      if (!response.ok || !result.ok) throw new Error(result.error || 'Gagal mengirim saran.');
+      form.reset();
+      successEl.textContent = result.message || 'Terima kasih! Saran Anda sudah kami terima.';
+      successEl.hidden = false;
+    } catch (err) {
+      errorEl.textContent = err.message;
+      errorEl.hidden = false;
+    } finally {
+      button.disabled = false;
+      button.textContent = 'Kirim Saran';
+    }
+  });
+})();
 
 /* =========================================================
    Filter daftar event
@@ -299,6 +343,109 @@ function downloadBlob(blob, filename) {
       });
     });
   });
+})();
+
+/* =========================================================
+   Panel admin â€” Saran & Masukan
+   ========================================================= */
+(function initFeedbackAdmin() {
+  const panel = document.getElementById('feedback-panel');
+  if (!panel) return;
+
+  const tbody = document.getElementById('feedback-tbody');
+  const countEl = document.getElementById('feedback-count');
+  const errorEl = document.getElementById('feedback-admin-error');
+
+  function showError(message) {
+    errorEl.textContent = message;
+    errorEl.hidden = false;
+  }
+
+  async function api(payload) {
+    const response = await fetch('/api/admin', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    return { response, data: await response.json() };
+  }
+
+  async function load() {
+    errorEl.hidden = true;
+    try {
+      const { response, data } = await api({ action: 'feedback_list' });
+      if (response.status === 401) { panel.hidden = true; return; }
+      if (!response.ok || !data.ok) throw new Error(data.error || 'Gagal memuat saran.');
+      panel.hidden = false;
+      const items = data.items || [];
+      if (countEl) countEl.textContent = items.length + ' saran';
+
+      if (!items.length) {
+        tbody.innerHTML = '<tr><td colspan="6" class="admin-empty">Belum ada saran yang masuk.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = items.map((item) => `
+        <tr>
+          <td><strong>${escapeHtml(item.name || '-')}</strong></td>
+          <td><small>${escapeHtml(item.email || '-')}</small></td>
+          <td><span>${escapeHtml(item.message || '-')}</span></td>
+          <td><small>${escapeHtml(item.event_slug || '-')}</small></td>
+          <td><small>${escapeHtml(item.created_at)}</small></td>
+          <td><button class="admin-delete" type="button" data-feedback-id="${escapeHtml(item.id)}">Hapus</button></td>
+        </tr>`).join('');
+
+      tbody.querySelectorAll('[data-feedback-id]').forEach((button) => {
+        button.addEventListener('click', async () => {
+          if (!window.confirm('Hapus saran ini?')) return;
+          try {
+            const res = await api({ action: 'feedback_delete', id: button.dataset.feedbackId });
+            if (!res.data.ok) throw new Error(res.data.error || 'Gagal menghapus saran.');
+            await load();
+          } catch (err) { showError(err.message); }
+        });
+      });
+    } catch (err) {
+      showError(err.message);
+    }
+  }
+
+  function escapeHtml(value) {
+    return String(value ?? '').replace(/[&<>"']/g, (c) => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+    })[c]);
+  }
+
+  document.getElementById('feedback-refresh')?.addEventListener('click', load);
+
+  document.getElementById('feedback-clear')?.addEventListener('click', async () => {
+    if (!window.confirm('Hapus SEMUA saran? Tindakan ini tidak bisa dibatalkan.')) return;
+    try {
+      const { data } = await api({ action: 'feedback_clear' });
+      if (!data.ok) throw new Error(data.error || 'Gagal menghapus saran.');
+      await load();
+    } catch (err) { showError(err.message); }
+  });
+
+  document.getElementById('feedback-export')?.addEventListener('click', async () => {
+    try {
+      const { response, data } = await api({ action: 'feedback_list' });
+      if (!response.ok || !data.ok) throw new Error(data.error || 'Gagal memuat saran.');
+      const header = ['ID', 'Nama', 'Email', 'Saran', 'Event', 'Waktu'];
+      const rows = (data.items || []).map((i) => [i.id, i.name || '', i.email || '', i.message || '', i.event_slug || '', i.created_at]);
+      const quote = (v) => '"' + String(v).replace(/"/g, '""') + '"';
+      const csv = [header, ...rows].map((r) => r.map(quote).join(',')).join('\r\n');
+      const url = URL.createObjectURL(new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' }));
+      const anchor = document.createElement('a');
+      anchor.href = url;
+      anchor.download = 'saran-masukan-' + new Date().toISOString().slice(0, 10) + '.csv';
+      anchor.click();
+      URL.revokeObjectURL(url);
+    } catch (err) { showError(err.message); }
+  });
+
+  window.addEventListener('admin:ready', load);
+  window.addEventListener('admin:logout', () => { panel.hidden = true; });
 })();
 
 /* =========================================================
@@ -349,6 +496,9 @@ function downloadBlob(blob, filename) {
     records = [];
     panel.hidden = true;
     loginView.hidden = false;
+    const generator = document.getElementById('event-generator');
+    if (generator) generator.hidden = true;
+    window.dispatchEvent(new Event('admin:logout'));
   });
 
   searchInput?.addEventListener('input', render);
@@ -383,6 +533,8 @@ function downloadBlob(blob, filename) {
       if (response.status === 401) {
         panel.hidden = true;
         loginView.hidden = false;
+        const generator = document.getElementById('event-generator');
+        if (generator) generator.hidden = true;
         loginError.hidden = true;
         return;
       }
@@ -390,6 +542,9 @@ function downloadBlob(blob, filename) {
       records = data.records;
       loginView.hidden = true;
       panel.hidden = false;
+      const generator = document.getElementById('event-generator');
+      if (generator) generator.hidden = false;
+      window.dispatchEvent(new Event('admin:ready'));
       render();
     } catch (err) {
       errorEl.textContent = err.message;
@@ -409,14 +564,14 @@ function downloadBlob(blob, filename) {
     if (countEl) {
       countEl.innerHTML = `<strong>${records.length} pendaftar</strong>`
         + (searchInput && searchInput.value.trim()
-          ? ` <span>· ${rows.length} hasil pencarian</span>` : '');
+          ? ` <span>Â· ${rows.length} hasil pencarian</span>` : '');
     }
     if (!tbody) return;
 
     tbody.innerHTML = rows.map((row) => `
       <tr>
         <td><strong>${escapeHtml(row.name)}</strong>
-          <small>${escapeHtml(row.institution)} · ${escapeHtml(row.position)}</small>
+          <small>${escapeHtml(row.institution)} Â· ${escapeHtml(row.position)}</small>
           <small class="admin-id">ID: ${escapeHtml(row.id)}</small></td>
         <td><span>${escapeHtml(row.whatsapp)}</span><small>${escapeHtml(row.email)}</small></td>
         <td><span>${escapeHtml(row.city)}</span><small>${escapeHtml(row.info_source)}</small></td>

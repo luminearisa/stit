@@ -43,3 +43,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# event hasil generate admin
+/data/events.json
+
+# template sertifikat hasil upload
+/data/certificates.json
+/assets/certificates/

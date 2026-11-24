@@ -93,4 +93,21 @@ Peserta isi form
 - Akses langsung ke `config.php`, `db.php`, `router.php`, dan folder `lib/` diblokir.
 - Untuk uji lokal: `php -S 127.0.0.1:8099 router.php`
 
+## Generate event dari flyer (panel admin)
+
+- Buka /admin, login, lalu section "Generate Event dari Flyer".
+- Upload flyer → klik "Baca Flyer & Isi Otomatis" → OCR browser (Tesseract.js) mengisi field.
+- Koreksi field (terutama judul bila huruf flyer distilisasi) → klik "Generate Event".
+- Event tersimpan di data/events.json (di-ignore git) dan langsung tampil di index + halaman /event?slug=... .
+- OCR tidak selalu sempurna; selalu periksa hasil sebelum generate.
+- Event yang sudah dibuat bisa diedit lewat tombol Edit pada daftar (mengubah judul, tanggal, harga, flyer, dll) tanpa mengubah slug/URL-nya.
+
 - Rekening default untuk event baru adalah BSI 8888441116 a.n. BSI STIT AL Wafi. Event lama (SPMI) tetap memakai BCA 4452227871.
+
+- Setiap event bisa menyembunyikan section tertentu (Pemateri, Biaya, Manfaat, Agenda, Saran & Masukan) lewat checkbox saat generate/edit. Hanya event tersebut yang terdampak, layout tetap sama.
+
+## Saran & Masukan
+
+- Section FAQ pada halaman event diganti form Saran & Masukan (semua field opsional, minimal satu diisi).
+- Data tersimpan di tabel `feedback`, terpisah dari `registrations`.
+- Panel admin menampilkan tabel saran setelah tabel pendaftar: refresh, ekspor CSV, hapus per item, hapus semua.

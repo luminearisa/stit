@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__ . '/events-store.php';
+
 /**
  *Satu-satunya sumber data event. Samakan dengan data/event.ts pada versi Next.js.
  */
@@ -112,7 +114,7 @@ $nav_links = [
     ['href' => '#pemateri', 'label' => 'Pemateri'],
     ['href' => '#manfaat', 'label' => 'Manfaat'],
     ['href' => '#agenda', 'label' => 'Agenda'],
-    ['href' => '#faq', 'label' => 'FAQ'],
+    ['href' => '#saran', 'label' => 'Saran'],
     ['href' => 'sertifikat', 'label' => 'E-Sertifikat'],
 ];
 
@@ -312,6 +314,9 @@ $events = [
         'agenda_note'  => 'Rangkaian sesi workshop dari pagi hingga sore hari.',
     ],
 ];
+
+// Event yang dibuat admin lewat panel (hasil generate flyer) ikut tampil.
+$events = array_merge($events, get_stored_events());
 
 function get_event(string $slug): ?array
 {

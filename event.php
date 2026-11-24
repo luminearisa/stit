@@ -24,6 +24,24 @@ $contact     = $detail['contact'] ?? $contact;
 $certificate = $detail['certificate'] ?? $certificate;
 $payment     = $detail['payment'] ?? $payment;
 
+// Section yang disembunyikan untuk event ini (dari hasil generate flyer).
+$sectionFlags = array_merge([
+    'speakers' => true, 'pricing' => true, 'benefits' => true,
+    'agenda' => true, 'feedback' => true,
+], $event['sections'] ?? []);
+// Kompatibilitas dengan event lama yang masih memakai kunci 'faq'.
+$sectionFlags['feedback'] = $event['sections']['feedback']
+    ?? $event['sections']['faq']
+    ?? $sectionFlags['feedback'];
+
+$navMap = [
+    '#biaya' => 'pricing', '#pemateri' => 'speakers', '#manfaat' => 'benefits',
+    '#agenda' => 'agenda', '#saran' => 'feedback',
+];
+$nav_links = array_values(array_filter(
+    $nav_links,
+    static fn($link) => !isset($navMap[$link['href']]) || !empty($sectionFlags[$navMap[$link['href']]])
+));
 $nav_links = array_merge([['href' => '/', 'label' => 'Semua Event']], $nav_links);
 
 function title_html(array $line): string
@@ -142,6 +160,7 @@ $theme = theme_style($event);
               ['calendar', 'Tanggal', $event['date']],
               ['clock', 'Waktu', $event['time']],
               ['video', 'Format', $event['platform']],
+              ['map-pin', 'Lokasi', $event['location']],
               ['users', 'Penyelenggara', $event['organizer']],
           ];
           foreach ($info_items as [$ic, $label, $value]): ?>
@@ -162,6 +181,7 @@ $theme = theme_style($event);
     </section>
 
     <!-- ============ BIAYA ============ -->
+    <?php if (!empty($sectionFlags['pricing'])): ?>
     <section class="section section--muted" id="biaya" aria-labelledby="biaya-title">
       <div class="container">
         <div class="section-heading section-heading--center">
@@ -194,8 +214,10 @@ $theme = theme_style($event);
         </div>
       </div>
     </section>
+    <?php endif; ?>
 
     <!-- ============ PEMATERI ============ -->
+    <?php if (!empty($sectionFlags['speakers'])): ?>
     <section class="section" id="pemateri" aria-labelledby="pemateri-title">
       <div class="container">
         <div class="section-heading section-heading--center">
@@ -220,8 +242,10 @@ $theme = theme_style($event);
         </div>
       </div>
     </section>
+    <?php endif; ?>
 
     <!-- ============ MANFAAT ============ -->
+    <?php if (!empty($sectionFlags['benefits'])): ?>
     <section class="section section--muted" id="manfaat" aria-labelledby="manfaat-title">
       <div class="container">
         <div class="section-heading section-heading--center">
@@ -247,8 +271,10 @@ $theme = theme_style($event);
         </div>
       </div>
     </section>
+    <?php endif; ?>
 
     <!-- ============ AGENDA ============ -->
+    <?php if (!empty($sectionFlags['agenda'])): ?>
     <section class="section" id="agenda" aria-labelledby="agenda-title">
       <div class="container">
         <div class="section-heading section-heading--center">
@@ -270,6 +296,7 @@ $theme = theme_style($event);
         </ol>
       </div>
     </section>
+    <?php endif; ?>
 
     <!-- ============ FORM PENDAFTARAN ============ -->
     <section class="section section--register" id="daftar" aria-labelledby="daftar-title">
@@ -342,25 +369,41 @@ $theme = theme_style($event);
       </div>
     </section>
 
-    <!-- ============ FAQ ============ -->
-    <section class="section" id="faq" aria-labelledby="faq-title">
+    <!-- ============ SARAN & MASUKAN ============ -->
+    <?php if (!empty($sectionFlags['feedback'])): ?>
+    <section class="section" id="saran" aria-labelledby="saran-title">
       <div class="container faq-grid">
         <div class="faq-intro">
-          <p class="section-heading__eyebrow">Pertanyaan Umum</p>
-          <h2 class="section-heading__title" id="faq-title">Hal yang Sering Ditanyakan</h2>
-          <p class="section-heading__desc">Masih ragu? Hubungi panitia melalui WhatsApp dan kami akan dengan senang hati membantu.</p>
+          <p class="section-heading__eyebrow">Komitmen Kami</p>
+          <h2 class="section-heading__title" id="saran-title">Saran &amp; Masukan</h2>
+          <p class="section-heading__desc">Bantu kami meningkatkan kualitas kegiatan. Tuliskan saran, masukan, atau kendala yang Anda temui — seluruh kolom bersifat opsional.</p>
           <a class="btn btn--outline" href="https://wa.me/<?= e($contact['whatsapp_digits']) ?>" target="_blank" rel="noopener noreferrer"><?= icon('whatsapp') ?> Hubungi Panitia</a>
         </div>
-        <div class="faq-list">
-          <?php foreach ($faqs as $index => $faq): ?>
-            <details class="faq-item" <?= $index === 0 ? 'open' : '' ?>>
-              <summary class="faq-item__question"><span><?= e($faq['question']) ?></span><?= icon('chevron') ?></summary>
-              <p class="faq-item__answer"><?= e($faq['answer']) ?></p>
-            </details>
-          <?php endforeach; ?>
+        <div class="feedback-card">
+          <form class="feedback-form" id="feedback-form" novalidate>
+            <div class="form-grid">
+              <div class="form-field">
+                <label for="fb-name">Nama (opsional)</label>
+                <input id="fb-name" name="name" type="text" placeholder="Nama Anda">
+              </div>
+              <div class="form-field">
+                <label for="fb-email">Email (opsional)</label>
+                <input id="fb-email" name="email" type="email" placeholder="nama@email.com">
+              </div>
+              <div class="form-field form-field--full">
+                <label for="fb-message">Saran / Masukan (opsional)</label>
+                <textarea id="fb-message" name="message" rows="4" placeholder="Tuliskan saran, masukan, atau kendala yang Anda temui..."></textarea>
+              </div>
+            </div>
+            <input type="hidden" name="event_slug" value="<?= e($event['slug']) ?>">
+            <p class="form-error" id="feedback-error" role="alert" hidden></p>
+            <p class="admin-notice admin-notice--ok" id="feedback-success" role="status" hidden></p>
+            <button class="btn btn--gold" type="submit" id="feedback-submit">Kirim Saran</button>
+          </form>
         </div>
       </div>
     </section>
+    <?php endif; ?>
   </main>
 
   <footer class="site-footer">

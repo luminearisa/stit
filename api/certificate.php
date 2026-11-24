@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../lib/registrations.php';
+require_once __DIR__ . '/../lib/certificates.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     json_response(['ok' => false, 'error' => 'Method tidak diizinkan.'], 405);
@@ -40,4 +41,5 @@ json_response([
         'venue'       => $detail['location'] ?? $event['location'],
     ],
     'certificate' => $cert,
+    'template' => get_certificate_config((string) ($record['source'] ?? '')),
 ]);
