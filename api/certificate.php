@@ -11,9 +11,25 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $raw = file_get_contents('php://input');
 $input = json_decode($raw ?: '', true);
 $whatsapp = isset($input['whatsapp']) && is_string($input['whatsapp']) ? $input['whatsapp'] : '';
+$eventSlug = isset($input['event_slug']) && is_string($input['event_slug']) ? trim($input['event_slug']) : '';
 
-$record = find_by_whatsapp($whatsapp);
+$record = $eventSlug !== ''
+    ? find_by_whatsapp_and_event($whatsapp, $eventSlug)
+    : find_by_whatsapp($whatsapp);
 if (!$record) {
+    // Beri petunjuk bila nomornya ternyata terdaftar di event lain.
+    if ($eventSlug !== '') {
+        $other = find_by_whatsapp($whatsapp);
+        if ($other) {
+            $otherEvent = get_event((string) ($other['source'] ?? ''));
+            $label = $otherEvent['title'] ?? (string) ($other['source'] ?? 'event lain');
+            json_response([
+                'ok' => false,
+                'error' => 'Nomor WhatsApp ini terdaftar pada event "' . $label
+                    . '". Silakan pilih event tersebut pada kolom Event.',
+            ], 404);
+        }
+    }
     json_response(['ok' => false, 'error' => 'Nomor WhatsApp tidak ditemukan dalam data pendaftaran.'], 404);
 }
 

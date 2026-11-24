@@ -123,7 +123,7 @@ function list_registrations(): array
     return db()->query('SELECT * FROM registrations ORDER BY created_at DESC, id DESC')->fetchAll();
 }
 
-/** Cari berdasarkan WhatsApp. Utamakan yang sudah terkonfirmasi. */
+/** Cari berdasarkan WhatsApp. Pendaftaran terbaru yang diprioritaskan. */
 function find_by_whatsapp(string $whatsapp): ?array
 {
     ensure_schema();
@@ -133,9 +133,26 @@ function find_by_whatsapp(string $whatsapp): ?array
     }
 
     $stmt = db()->prepare(
-        'SELECT * FROM registrations WHERE whatsapp = ? ORDER BY CASE status WHEN "terkonfirmasi" THEN 0 WHEN "lunas" THEN 1 ELSE 2 END, created_at DESC LIMIT 1'
+        'SELECT * FROM registrations WHERE whatsapp = ? ORDER BY created_at DESC, CASE status WHEN "terkonfirmasi" THEN 0 WHEN "lunas" THEN 1 ELSE 2 END LIMIT 1'
     );
     $stmt->execute([$wa]);
+    $row = $stmt->fetch();
+    return $row ?: null;
+}
+
+/** Cari pendaftar berdasarkan WhatsApp DAN event tertentu. */
+function find_by_whatsapp_and_event(string $whatsapp, string $eventSlug): ?array
+{
+    ensure_schema();
+    $wa = normalize_whatsapp($whatsapp);
+    if ($wa === '' || $eventSlug === '') {
+        return null;
+    }
+
+    $stmt = db()->prepare(
+        'SELECT * FROM registrations WHERE whatsapp = ? AND source = ? ORDER BY created_at DESC LIMIT 1'
+    );
+    $stmt->execute([$wa, $eventSlug]);
     $row = $stmt->fetch();
     return $row ?: null;
 }

@@ -86,7 +86,7 @@ $theme = theme_style($event);
           <?php endforeach; ?>
         </ul>
       </nav>
-      <a class="btn btn--gold nav__cta" href="sertifikat">E-Sertifikat</a>
+      <a class="btn btn--gold nav__cta" href="sertifikat?event=<?= e($event['slug']) ?>">E-Sertifikat</a>
       <button type="button" class="site-header__toggle" id="nav-toggle" aria-expanded="false" aria-controls="mobile-menu" aria-label="Buka menu navigasi">
         <?= icon('chevron') ?>
       </button>
@@ -217,7 +217,7 @@ $theme = theme_style($event);
     <?php endif; ?>
 
     <!-- ============ PEMATERI ============ -->
-    <?php if (!empty($sectionFlags['speakers'])): ?>
+    <?php if (!empty($sectionFlags['speakers']) && !empty($speakers)): ?>
     <section class="section" id="pemateri" aria-labelledby="pemateri-title">
       <div class="container">
         <div class="section-heading section-heading--center">
@@ -363,7 +363,7 @@ $theme = theme_style($event);
             <h3>Pendaftaran Berhasil!</h3>
             <p>Data pendaftaran Anda telah tersimpan. Panitia akan menghubungi Anda melalui WhatsApp untuk konfirmasi pembayaran.</p>
             <p class="form-success__id" id="form-success-id"></p>
-            <a class="btn btn--outline" href="sertifikat">Cek &amp; Unduh E-Sertifikat</a>
+            <a class="btn btn--outline" href="sertifikat?event=<?= e($event['slug']) ?>">Cek &amp; Unduh E-Sertifikat</a>
           </div>
         </div>
       </div>
@@ -414,7 +414,7 @@ $theme = theme_style($event);
       </div>
       <p class="site-footer__copy"><?= e(site_credit()) ?></p>
       <div class="site-footer__links">
-        <a href="sertifikat"><?= icon('check') ?> E-Sertifikat</a>
+        <a href="sertifikat?event=<?= e($event['slug']) ?>"><?= icon('check') ?> E-Sertifikat</a>
       </div>
     </div>
   </footer>

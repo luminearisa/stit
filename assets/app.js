@@ -219,7 +219,10 @@
       const response = await fetch('api/certificate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ whatsapp: input.value }),
+        body: JSON.stringify({
+          whatsapp: input.value,
+          event_slug: document.getElementById('cert-event')?.value || '',
+        }),
       });
       const result = await response.json();
 
@@ -354,6 +357,7 @@ function downloadBlob(blob, filename) {
 
   const tbody = document.getElementById('feedback-tbody');
   const countEl = document.getElementById('feedback-count');
+  const eventFilter = document.getElementById('feedback-event-filter');
   const errorEl = document.getElementById('feedback-admin-error');
 
   function showError(message) {
@@ -377,8 +381,13 @@ function downloadBlob(blob, filename) {
       if (response.status === 401) { panel.hidden = true; return; }
       if (!response.ok || !data.ok) throw new Error(data.error || 'Gagal memuat saran.');
       panel.hidden = false;
-      const items = data.items || [];
-      if (countEl) countEl.textContent = items.length + ' saran';
+      const allItems = data.items || [];
+      const slug = eventFilter ? eventFilter.value : '';
+      const items = slug ? allItems.filter((item) => item.event_slug === slug) : allItems;
+      if (countEl) {
+        countEl.textContent = items.length + ' saran'
+          + (slug ? ' · dari ' + allItems.length + ' total' : '');
+      }
 
       if (!items.length) {
         tbody.innerHTML = '<tr><td colspan="6" class="admin-empty">Belum ada saran yang masuk.</td></tr>';
@@ -417,6 +426,7 @@ function downloadBlob(blob, filename) {
   }
 
   document.getElementById('feedback-refresh')?.addEventListener('click', load);
+  eventFilter?.addEventListener('change', load);
 
   document.getElementById('feedback-clear')?.addEventListener('click', async () => {
     if (!window.confirm('Hapus SEMUA saran? Tindakan ini tidak bisa dibatalkan.')) return;
@@ -432,7 +442,11 @@ function downloadBlob(blob, filename) {
       const { response, data } = await api({ action: 'feedback_list' });
       if (!response.ok || !data.ok) throw new Error(data.error || 'Gagal memuat saran.');
       const header = ['ID', 'Nama', 'Email', 'Saran', 'Event', 'Waktu'];
-      const rows = (data.items || []).map((i) => [i.id, i.name || '', i.email || '', i.message || '', i.event_slug || '', i.created_at]);
+      const slug = eventFilter ? eventFilter.value : '';
+      const items = slug
+        ? (data.items || []).filter((i) => i.event_slug === slug)
+        : (data.items || []);
+      const rows = items.map((i) => [i.id, i.name || '', i.email || '', i.message || '', i.event_slug || '', i.created_at]);
       const quote = (v) => '"' + String(v).replace(/"/g, '""') + '"';
       const csv = [header, ...rows].map((r) => r.map(quote).join(',')).join('\r\n');
       const url = URL.createObjectURL(new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' }));
@@ -463,6 +477,7 @@ function downloadBlob(blob, filename) {
   const tbody = document.getElementById('admin-tbody');
   const countEl = document.getElementById('admin-count');
   const searchInput = document.getElementById('admin-search');
+  const eventFilter = document.getElementById('reg-event-filter');
   const errorEl = document.getElementById('admin-error');
   const statusLabels = window.ADMIN_STATUS_LABELS || {};
   let records = [];
@@ -502,6 +517,7 @@ function downloadBlob(blob, filename) {
   });
 
   searchInput?.addEventListener('input', render);
+  eventFilter?.addEventListener('change', render);
   document.getElementById('admin-refresh')?.addEventListener('click', load);
   document.getElementById('admin-export')?.addEventListener('click', exportCsv);
 
@@ -553,18 +569,22 @@ function downloadBlob(blob, filename) {
   }
 
   function filtered() {
+    const slug = eventFilter ? eventFilter.value : '';
     const q = searchInput ? searchInput.value.trim().toLowerCase() : '';
-    if (!q) return records;
-    return records.filter((row) => Object.values(row)
-      .some((value) => String(value ?? '').toLowerCase().includes(q)));
+    return records.filter((row) => {
+      if (slug && row.source !== slug) return false;
+      if (!q) return true;
+      return Object.values(row)
+        .some((value) => String(value ?? '').toLowerCase().includes(q));
+    });
   }
 
   function render() {
     const rows = filtered();
     if (countEl) {
-      countEl.innerHTML = `<strong>${records.length} pendaftar</strong>`
-        + (searchInput && searchInput.value.trim()
-          ? ` <span>Â· ${rows.length} hasil pencarian</span>` : '');
+      const activeFilter = (eventFilter && eventFilter.value) || (searchInput && searchInput.value.trim());
+      countEl.innerHTML = `<strong>${rows.length} pendaftar</strong>`
+        + (activeFilter ? ` <span>· dari ${records.length} total</span>` : '');
     }
     if (!tbody) return;
 

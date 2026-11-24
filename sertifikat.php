@@ -45,6 +45,17 @@ $theme = theme_style($event);
       <div class="certificate-wrap">
         <form class="check-form" id="certificate-form" novalidate>
           <div class="form-field">
+            <label for="cert-event">Event</label>
+            <select id="cert-event" name="event_slug">
+              <?php
+              $selectedEvent = isset($_GET['event']) && is_string($_GET['event']) ? $_GET['event'] : '';
+              foreach ($events as $item): ?>
+                <option value="<?= e($item['slug']) ?>" <?= $item['slug'] === $selectedEvent ? 'selected' : '' ?>><?= e($item['title']) ?></option>
+              <?php endforeach; ?>
+            </select>
+            <small class="form-hint">Pilih event tempat peserta mendaftar agar data sertifikatnya tepat.</small>
+          </div>
+          <div class="form-field">
             <label for="cert-whatsapp">Nomor WhatsApp <span>*</span></label>
             <input id="cert-whatsapp" name="whatsapp" type="tel" required placeholder="Nomor yang dipakai saat mendaftar, mis. 081234567890">
             <small class="form-hint">Sertifikat hanya tersedia untuk pendaftar yang sudah terkonfirmasi.</small>

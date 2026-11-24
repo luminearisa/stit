@@ -247,7 +247,8 @@
     document.getElementById('ev-location').value = data.location || '';
     document.getElementById('ev-price').value = data.price || '';
     document.getElementById('ev-price-label').value = data.priceLabel || '';
-    document.getElementById('ev-speaker').value = data.speaker || '';
+    const firstSpeaker = document.querySelector('[name="speaker_1"]');
+    if (firstSpeaker) firstSpeaker.value = data.speaker || '';
     document.getElementById('ev-whatsapp').value = data.whatsapp || '';
     document.getElementById('ev-summary').value = data.summary || '';
   }
@@ -305,7 +306,10 @@
             document.getElementById('ev-location').value = ev.location || '';
             document.getElementById('ev-price').value = ev.price_tiers?.[0]?.price || '';
             document.getElementById('ev-price-label').value = ev.price_tiers?.[0]?.flyer_label || ev.price_tiers?.[0]?.label || '';
-            document.getElementById('ev-speaker').value = ev.speakers?.[0]?.name || '';
+            ['speaker_1', 'speaker_2', 'speaker_3'].forEach((name, index) => {
+              const input = document.querySelector('[name="' + name + '"]');
+              if (input) input.value = ev.speakers?.[index]?.name || '';
+            });
             document.getElementById('ev-whatsapp').value = ev.contact?.whatsapp || '';
             document.getElementById('ev-summary').value = ev.summary || '';
             document.getElementById('ev-flyer').value = ev.flyer || '';
@@ -450,7 +454,9 @@
       location: data.get('location'),
       price: Number(data.get('price') || 0),
       price_label: data.get('price_label'),
-      speaker: data.get('speaker'),
+      speakers: ['speaker_1', 'speaker_2', 'speaker_3']
+        .map((key) => String(data.get(key) || '').trim())
+        .filter(Boolean),
       whatsapp: data.get('whatsapp'),
       summary: data.get('summary'),
       flyer: data.get('flyer'),

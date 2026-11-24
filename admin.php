@@ -18,6 +18,7 @@ $theme = theme_style($event);
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js" defer></script>
   <script src="assets/app.js" defer></script>
   <script src="assets/admin-events.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js" defer></script>
   <script src="assets/admin-certificates.js" defer></script>
   <script>
     window.ADMIN_STATUS_LABELS = <?= json_encode($status_labels, JSON_UNESCAPED_UNICODE) ?>;
@@ -54,6 +55,12 @@ $theme = theme_style($event);
         <div class="admin-toolbar">
           <div id="admin-count"></div>
           <div class="admin-toolbar__actions">
+            <select class="admin-event-filter" id="reg-event-filter" aria-label="Filter event pendaftar">
+              <option value="">Semua Event</option>
+              <?php foreach ($events as $item): ?>
+                <option value="<?= e($item['slug']) ?>"><?= e($item['title']) ?></option>
+              <?php endforeach; ?>
+            </select>
             <input class="admin-search" id="admin-search" type="search" placeholder="Cari nama, email, WhatsApp, instansi..." aria-label="Cari pendaftar">
             <button class="btn btn--outline" type="button" id="admin-refresh">Refresh</button>
             <button class="btn btn--outline" type="button" id="admin-export">Ekspor CSV</button>
@@ -90,6 +97,12 @@ $theme = theme_style($event);
             <p class="section-heading__desc">Data saran tersimpan terpisah dari pendaftaran dan dikirim dari halaman event.</p>
           </div>
           <div class="admin-toolbar__actions">
+            <select class="admin-event-filter" id="feedback-event-filter" aria-label="Filter event saran">
+              <option value="">Semua Event</option>
+              <?php foreach ($events as $item): ?>
+                <option value="<?= e($item['slug']) ?>"><?= e($item['title']) ?></option>
+              <?php endforeach; ?>
+            </select>
             <span id="feedback-count"></span>
             <button class="btn btn--outline" type="button" id="feedback-refresh">Refresh</button>
             <button class="btn btn--outline" type="button" id="feedback-export">Ekspor CSV</button>
@@ -198,9 +211,13 @@ $theme = theme_style($event);
                 <label for="ev-price-label">Label Biaya</label>
                 <input id="ev-price-label" name="price_label" type="text" placeholder="Mis. Early Bird">
               </div>
-              <div class="form-field">
-                <label for="ev-speaker">Narasumber</label>
-                <input id="ev-speaker" name="speaker" type="text" placeholder="Nama pemateri">
+              <div class="form-field form-field--full">
+                <label>Narasumber (opsional, maksimal 3)</label>
+                <div class="speaker-inputs">
+                  <input name="speaker_1" type="text" placeholder="Narasumber 1">
+                  <input name="speaker_2" type="text" placeholder="Narasumber 2">
+                  <input name="speaker_3" type="text" placeholder="Narasumber 3">
+                </div>
               </div>
               <div class="form-field">
                 <label for="ev-whatsapp">WhatsApp Panitia</label>
@@ -267,8 +284,8 @@ $theme = theme_style($event);
 
         <div class="cert-editor" id="cert-editor" hidden>
           <div class="cert-editor__preview">
-            <img id="cert-preview-img" alt="Pratinjau template sertifikat">
-            <small>Klik pada gambar untuk menentukan posisi nama peserta.</small>
+            <canvas id="cert-preview-canvas" aria-label="Pratinjau template sertifikat dengan nama peserta"></canvas>
+            <small id="cert-sample-label">Klik pada gambar untuk menentukan posisi nama peserta.</small>
           </div>
           <div class="cert-editor__fields">
             <h4>Posisi Nama Peserta</h4>
@@ -312,6 +329,17 @@ $theme = theme_style($event);
         <div class="admin-generated">
           <h3>Status template per event</h3>
           <div id="cert-list"></div>
+        </div>
+
+        <div class="admin-generated" id="cert-batch">
+          <h3>Generate Massal <span id="cert-batch-count"></span></h3>
+          <p class="form-hint">Buat sertifikat untuk seluruh pendaftar berstatus Terkonfirmasi pada event yang sedang dipilih.</p>
+          <div class="event-gen-actions">
+            <button class="btn btn--gold" type="button" id="cert-batch-btn">Buat Sertifikat Semua</button>
+            <button class="btn btn--outline" type="button" id="cert-batch-zip" hidden>Unduh Semua (.zip)</button>
+          </div>
+          <p class="admin-notice" id="cert-batch-status" role="status" hidden></p>
+          <div id="cert-batch-gallery"></div>
         </div>
       </section>
     </div>

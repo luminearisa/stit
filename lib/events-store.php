@@ -48,6 +48,42 @@ function unique_event_slug(string $slug, array $events): string
     return $slug;
 }
 
+/** Ubah tanggal bahasa Indonesia + jam menjadi ISO datetime untuk status & countdown. */
+function parse_event_datetime(string $dateText, string $timeText, bool $end = false): string
+{
+    $months = [
+        'januari' => 1, 'februari' => 2, 'maret' => 3, 'april' => 4,
+        'mei' => 5, 'juni' => 6, 'juli' => 7, 'agustus' => 8,
+        'september' => 9, 'oktober' => 10, 'november' => 11, 'desember' => 12,
+    ];
+
+    if (!preg_match('/(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})/', $dateText, $match)) {
+        return date('Y-m-d') . 'T' . ($end ? '16:00' : '08:00') . ':00+07:00';
+    }
+
+    $monthWord = strtolower($match[2]);
+    $month = 1;
+    foreach ($months as $name => $number) {
+        if (strpos($name, substr($monthWord, 0, 3)) === 0) {
+            $month = $number;
+            break;
+        }
+    }
+
+    preg_match_all('/(\d{1,2})[.:](\d{2})/', $timeText, $times);
+    $hour = isset($times[1][0]) ? (int) $times[1][0] : ($end ? 16 : 8);
+    $minute = isset($times[2][0]) ? (int) $times[2][0] : 0;
+    if ($end && isset($times[1][1])) {
+        $hour = (int) $times[1][1];
+        $minute = (int) $times[2][1];
+    }
+
+    return sprintf(
+        '%04d-%02d-%02dT%02d:%02d:00+07:00',
+        (int) $match[3], $month, (int) $match[1], $hour, $minute
+    );
+}
+
 /** Lengkapi event hasil OCR dengan field standar yang dipakai index.php & event.php. */
 function normalize_event(array $input, ?string $forceSlug = null): array
 {
@@ -65,22 +101,39 @@ function normalize_event(array $input, ?string $forceSlug = null): array
         : [$titleLine];
 
     $flyer = (string) ($input['flyer'] ?? 'assets/flyer.jpeg');
+    $dateLabel = (string) ($input['date'] ?? '-');
+    $timeLabel = (string) ($input['time'] ?? '-');
+    $startAt = parse_event_datetime($dateLabel, $timeLabel, false);
+    $endAt = parse_event_datetime($dateLabel, $timeLabel, true);
 
-    $speakers = $input['speakers'] ?? [[
-        'name' => 'Panitia', 'role' => 'Narasumber',
-        'bio' => 'Informasi narasumber akan diumumkan lebih lanjut.',
-        'initials' => 'PN', 'topics' => [],
-    ]];
-    if (trim((string) ($input['speaker'] ?? '')) !== '') {
-        $speakerName = trim((string) $input['speaker']);
-        $speakers = [[
+    // Hingga 3 narasumber opsional.
+    $speakerNames = [];
+    if (isset($input['speakers']) && is_array($input['speakers'])) {
+        foreach ($input['speakers'] as $value) {
+            $name = is_array($value) ? trim((string) ($value['name'] ?? '')) : trim((string) $value);
+            if ($name !== '') {
+                $speakerNames[] = $name;
+            }
+        }
+    }
+    if (!$speakerNames && trim((string) ($input['speaker'] ?? '')) !== '') {
+        $speakerNames[] = trim((string) $input['speaker']);
+    }
+
+    $speakers = [];
+    foreach (array_slice($speakerNames, 0, 3) as $speakerName) {
+        $clean = preg_replace('/[^A-Za-z ]/', '', $speakerName) ?: '';
+        $parts = preg_split('/\s+/', trim($clean)) ?: [];
+        $initials = strtoupper(
+            substr($parts[0] ?? 'N', 0, 1) . substr($parts[1] ?? '', 0, 1)
+        );
+        $speakers[] = [
             'name' => $speakerName,
             'role' => (string) ($input['speaker_role'] ?? 'Narasumber'),
             'bio' => 'Narasumber kegiatan ' . $title . '.',
-            'initials' => strtoupper(substr(preg_replace('/[^A-Za-z ]/', '', $speakerName) ?: 'PN', 0, 1))
-                . strtoupper(substr(strstr($speakerName, ' ') ?: 'N', 1, 1)),
+            'initials' => $initials ?: 'PN',
             'topics' => [],
-        ]];
+        ];
     }
 
     $priceTiers = $input['price_tiers'] ?? [[
@@ -123,8 +176,8 @@ function normalize_event(array $input, ?string $forceSlug = null): array
         'category'        => (string) ($input['category'] ?? 'Event · STIT Al Wafi'),
         'date'            => (string) ($input['date'] ?? '-'),
         'time'            => (string) ($input['time'] ?? '-'),
-        'start_at'        => (string) ($input['start_at'] ?? date('Y-m-d') . 'T08:00:00+07:00'),
-        'end_at'          => (string) ($input['end_at'] ?? date('Y-m-d') . 'T16:00:00+07:00'),
+        'start_at'        => $startAt,
+        'end_at'          => $endAt,
         'flyer'           => $flyer,
         'flyer_image'     => $flyer,
         'theme'           => $input['theme'] ?? [
@@ -135,7 +188,7 @@ function normalize_event(array $input, ?string $forceSlug = null): array
         'organizer'       => (string) ($input['organizer'] ?? 'STIT Al Wafi Bogor'),
         'organizer_short' => 'STIT AL WAFI',
         'eyebrow'         => (string) ($input['eyebrow'] ?? 'AGENDA & PELATIHAN'),
-        'countdown_to'    => (string) ($input['start_at'] ?? date('Y-m-d') . 'T08:00:00+07:00'),
+        'countdown_to'    => $startAt,
         'full_title'      => (string) ($input['full_title'] ?? $title),
         'title_kicker'    => (string) ($input['title_kicker'] ?? 'Event'),
         'title_lines'     => $input['title_lines'] ?? array_map(

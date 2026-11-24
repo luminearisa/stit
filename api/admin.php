@@ -132,9 +132,20 @@ if ($action === 'event_get') {
 
 if ($action === 'event_update') {
     $slug = isset($input['slug']) && is_string($input['slug']) ? $input['slug'] : '';
+    $before = get_stored_event($slug);
     $updated = update_stored_event($slug, $input);
     if (!$updated) {
         json_response(['ok' => false, 'error' => 'Event tidak ditemukan.'], 404);
+    }
+
+    // Hapus flyer lama bila diganti dengan file baru hasil upload.
+    $oldFlyer = (string) ($before['flyer'] ?? '');
+    $newFlyer = (string) ($updated['flyer'] ?? '');
+    if ($oldFlyer !== '' && $oldFlyer !== $newFlyer && str_starts_with($oldFlyer, 'assets/flyers/')) {
+        $oldFile = __DIR__ . '/../' . $oldFlyer;
+        if (is_file($oldFile)) {
+            unlink($oldFile);
+        }
     }
     json_response([
         'ok' => true,
@@ -154,10 +165,31 @@ if ($action === 'event_create') {
 
 if ($action === 'event_delete') {
     $slug = isset($input['slug']) && is_string($input['slug']) ? $input['slug'] : '';
-    if ($slug === '' || !delete_stored_event($slug)) {
+    $eventToDelete = get_stored_event($slug);
+    if ($slug === '' || !$eventToDelete || !delete_stored_event($slug)) {
         json_response(['ok' => false, 'error' => 'Event tidak ditemukan.'], 404);
     }
-    json_response(['ok' => true, 'message' => 'Event dihapus.']);
+
+    // Bersihkan flyer hasil upload milik event ini.
+    $flyer = (string) ($eventToDelete['flyer'] ?? '');
+    if (str_starts_with($flyer, 'assets/flyers/')) {
+        $flyerFile = __DIR__ . '/../' . $flyer;
+        if (is_file($flyerFile)) {
+            unlink($flyerFile);
+        }
+    }
+
+    // Bersihkan template sertifikat event ini.
+    $template = get_certificate_config($slug);
+    if ($template) {
+        $templateFile = __DIR__ . '/../' . (string) ($template['image'] ?? '');
+        if (is_file($templateFile)) {
+            unlink($templateFile);
+        }
+        delete_certificate_config($slug);
+    }
+
+    json_response(['ok' => true, 'message' => 'Event beserta asetnya dihapus.']);
 }
 
 /* ---------- Template sertifikat per event ---------- */
@@ -187,6 +219,14 @@ if ($action === 'certificate_upload') {
     $filename = preg_replace('/[^a-z0-9-]+/', '-', $slug) . '-' . bin2hex(random_bytes(3)) . '.' . $extension;
     if (!move_uploaded_file((string) $_FILES['certificate']['tmp_name'], $directory . '/' . $filename)) {
         json_response(['ok' => false, 'error' => 'Gagal menyimpan file.'], 500);
+    }
+
+    $previous = get_certificate_config($slug);
+    if ($previous && !empty($previous['image'])) {
+        $oldFile = __DIR__ . '/../' . $previous['image'];
+        if (is_file($oldFile)) {
+            unlink($oldFile);
+        }
     }
 
     $config = save_certificate_config($slug, [

@@ -111,3 +111,9 @@ Peserta isi form
 - Section FAQ pada halaman event diganti form Saran & Masukan (semua field opsional, minimal satu diisi).
 - Data tersimpan di tabel `feedback`, terpisah dari `registrations`.
 - Panel admin menampilkan tabel saran setelah tabel pendaftar: refresh, ekspor CSV, hapus per item, hapus semua.
+
+- Narasumber pada generator bisa diisi hingga 3 orang (opsional). Jika kosong, section Pemateri tidak ditampilkan.
+
+- Generate massal: tombol Buat Sertifikat Semua membuat PNG untuk seluruh pendaftar Terkonfirmasi pada event terpilih, bisa diunduh per orang atau sekaligus sebagai ZIP.
+
+- Tabel Pendaftar dan Saran & Masukan di panel admin memiliki filter Event (Semua Event + daftar event), termasuk pada ekspor CSV.
