@@ -117,3 +117,5 @@ Peserta isi form
 - Generate massal: tombol Buat Sertifikat Semua membuat PNG untuk seluruh pendaftar Terkonfirmasi pada event terpilih, bisa diunduh per orang atau sekaligus sebagai ZIP.
 
 - Tabel Pendaftar dan Saran & Masukan di panel admin memiliki filter Event (Semua Event + daftar event), termasuk pada ekspor CSV.
+
+- Retensi otomatis: HANYA event yang sudah berlangsung (selesai) dan lewat 10 hari setelahnya yang dihapus dari index, halaman event, dan seluruh panel admin, beserta flyer, template sertifikat, pendaftar, dan saran terkait.

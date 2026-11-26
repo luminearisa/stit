@@ -138,7 +138,7 @@ $registration_fields = [
     ['key' => 'infoSource',    'db' => 'info_source',    'label' => 'Mendapatkan Informasi Event Dari?', 'placeholder' => 'Mis. Instagram, WhatsApp, teman, dll.', 'type' => 'text', 'required' => true, 'full' => true, 'max' => 120, 'suggestions' => ['Instagram', 'WhatsApp', 'Teman / Kolega', 'Website / Media Sosial STIT Al Wafi', 'Grup Komunitas / Paguyuban', 'Lainnya']],
     ['key' => 'position',      'db' => 'position',       'label' => 'Jabatan', 'placeholder' => 'Mis. Dosen, Kepala Unit SPMI', 'type' => 'text', 'required' => true, 'max' => 120],
     ['key' => 'fieldOfStudy',  'db' => 'field_of_study', 'label' => 'Bidang Ilmu yang dikuasai', 'placeholder' => 'Mis. Pendidikan, Manajemen, Informatika', 'type' => 'text', 'required' => true, 'max' => 200],
-    ['key' => 'otherTraining', 'db' => 'other_training', 'label' => 'Pelatihan Lain yang Dibutuhkan', 'placeholder' => "Tuliskan pelatihan lain yang Anda butuhkan (atau '-' jika tidak ada)", 'type' => 'textarea', 'required' => true, 'full' => true, 'max' => 1000],
+    ['key' => 'otherTraining', 'db' => 'other_training', 'label' => 'Tujuan Mengikuti Pelatihan Ini', 'placeholder' => 'Ceritakan tujuan Anda mengikuti pelatihan ini', 'type' => 'textarea', 'required' => true, 'full' => true, 'max' => 1000],
 ];
 
 $admin_columns = [
@@ -215,11 +215,11 @@ $events = [
         'short_title' => 'Auditor AMI',
         'summary'     => 'Penguatan kapasitas auditor internal untuk implementasi SPMI, evaluasi pemenuhan standar, dan peningkatan mutu berkelanjutan. Peserta mendapatkan Sertifikat Auditor AMI.',
         'category'    => 'Pelatihan · Offline',
-        'date'        => 'Senin, 07 Desember 2026',
+        'date'        => 'Selasa, 15 Desember 2026',
         'time'        => '08.00 - 16.30 WIB',
-        'start_at'    => '2026-12-07T08:00:00+07:00',
-        'end_at'      => '2026-12-07T16:30:00+07:00',
-        'flyer'       => 'assets/flyer-ami-final.jpeg',
+        'start_at'    => '2026-12-15T08:00:00+07:00',
+        'end_at'      => '2026-12-15T16:30:00+07:00',
+        'flyer'       => 'assets/flyer-ami-new.jpeg',
         'theme'       => [
             'primary'   => '#0b2f6b',
             'secondary' => '#1e4b8f',
@@ -230,8 +230,8 @@ $events = [
         'organizer'       => 'STIT Al Wafi Bogor (in partnership with UIN Sunan Gunung Djati Bandung)',
         'organizer_short' => 'STIT AL WAFI',
         'eyebrow'         => 'Pelatihan Offline · Auditor AMI',
-        'countdown_to'    => '2026-12-07T08:00:00+07:00',
-        'flyer_image'     => 'assets/flyer-ami-final.jpeg',
+        'countdown_to'    => '2026-12-15T08:00:00+07:00',
+        'flyer_image'     => 'assets/flyer-ami-new.jpeg',
         'full_title'  => 'Pelatihan Auditor AMI — Penguatan Kapasitas Auditor Internal untuk Implementasi SPMI, Evaluasi Pemenuhan Standar dan Peningkatan Mutu Berkelanjutan',
         'title_kicker' => 'Pelatihan',
         'title_lines' => [
@@ -323,6 +323,17 @@ $events = [
 
 // Event yang dibuat admin lewat panel (hasil generate flyer) ikut tampil.
 $events = array_merge($events, get_stored_events());
+
+// Retensi otomatis: event yang selesai > 10 hari hilang dari index, halaman
+// event, dan seluruh panel admin (termasuk pendaftar & saran terkait).
+require_once __DIR__ . '/retention.php';
+$expired_event_slugs = purge_expired_events($events);
+if ($expired_event_slugs) {
+    $events = array_values(array_filter(
+        $events,
+        static fn($item) => !in_array((string) ($item['slug'] ?? ''), $expired_event_slugs, true)
+    ));
+}
 
 function get_event(string $slug): ?array
 {

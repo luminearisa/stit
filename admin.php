@@ -183,7 +183,7 @@ $theme = theme_style($event);
               </div>
               <div class="form-field">
                 <label for="ev-date">Tanggal <span>*</span></label>
-                <input id="ev-date" name="date" type="text" required placeholder="Mis. Senin, 07 Desember 2026">
+                <input id="ev-date" name="date" type="text" required placeholder="Mis. Selasa, 15 Desember 2026">
               </div>
               <div class="form-field">
                 <label for="ev-time">Waktu <span>*</span></label>
