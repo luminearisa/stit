@@ -205,12 +205,30 @@ $theme = theme_style($event);
             </article>
           <?php endforeach; ?>
         </div>
+        <?php
+        $paymentIsBsi = strtoupper((string) ($payment['bank'] ?? '')) === 'BSI';
+        ob_start();
+        if ($paymentIsBsi):
+        ?>
+          <h3>Cara pembayaran melalui Bank Syariah Indonesia (BSI)</h3>
+          <ul class="payment-card__lines">
+            <li>Transfer ke rekening <strong>BSI <?= e($payment['account_number']) ?></strong> a.n. <strong><?= e($payment['account_holder']) ?></strong></li>
+            <li>Transfer melalui ATM kode bank BSI <strong>(451)<?= e($payment['account_number']) ?></strong></li>
+          </ul>
+          <p>Konfirmasi pembayaran melalui WhatsApp panitia di <strong><?= e($contact['whatsapp']) ?></strong>.</p>
+        <?php else: ?>
+          <h3>Cara Pembayaran</h3>
+          <p>Transfer ke rekening <strong><?= e($payment['bank']) ?></strong> <strong class="payment-card__number"><?= e($payment['account_number']) ?></strong> a.n. <strong><?= e($payment['account_holder']) ?></strong>. Konfirmasi pembayaran melalui WhatsApp panitia di <strong><?= e($contact['whatsapp']) ?></strong>.</p>
+        <?php endif; ?>
+        <?php $paymentDetails = ob_get_clean(); ?>
+
         <div class="payment-card">
-          <div class="payment-card__icon"><?= icon('sparkles') ?></div>
-          <div>
-            <h3>Cara Pembayaran</h3>
-            <p>Transfer ke rekening <strong><?= e($payment['bank']) ?></strong> <strong class="payment-card__number"><?= e($payment['account_number']) ?></strong> a.n. <strong><?= e($payment['account_holder']) ?></strong>. Konfirmasi pembayaran melalui WhatsApp panitia di <strong><?= e($contact['whatsapp']) ?></strong>.</p>
-          </div>
+          <?php if ($paymentIsBsi): ?>
+            <img class="payment-card__logo" src="assets/logo-bsi.png" alt="Logo Bank Syariah Indonesia">
+          <?php else: ?>
+            <div class="payment-card__icon"><?= icon('sparkles') ?></div>
+          <?php endif; ?>
+          <div><?= $paymentDetails ?></div>
         </div>
       </div>
     </section>
@@ -306,7 +324,7 @@ $theme = theme_style($event);
           <h2 class="section-heading__title" id="daftar-title">Daftar Sekarang</h2>
           <p class="register-aside__desc">Isi formulir berikut dengan data yang benar. Panitia akan menghubungi Anda melalui WhatsApp untuk konfirmasi pembayaran.</p>
           <div class="register-aside__steps">
-            <?php foreach (['Isi formulir pendaftaran', 'Transfer ke rekening BCA', 'Konfirmasi via WhatsApp', 'Terima link Zoom & materi'] as $index => $step): ?>
+            <?php foreach (['Isi formulir pendaftaran', 'Transfer ke rekening ' . $payment['bank'], 'Konfirmasi via WhatsApp'] as $index => $step): ?>
               <div class="register-step"><span><?= $index + 1 ?></span><p><?= e($step) ?></p></div>
             <?php endforeach; ?>
           </div>
@@ -363,7 +381,38 @@ $theme = theme_style($event);
             <h3>Pendaftaran Berhasil!</h3>
             <p>Data pendaftaran Anda telah tersimpan. Panitia akan menghubungi Anda melalui WhatsApp untuk konfirmasi pembayaran.</p>
             <p class="form-success__id" id="form-success-id"></p>
-            <a class="btn btn--outline" href="sertifikat?event=<?= e($event['slug']) ?>">Cek &amp; Unduh E-Sertifikat</a>
+            <button class="btn btn--outline js-open-payment" type="button">Konfirmasi Pembayaran</button>
+          </div>
+
+          <div class="wa-group-modal" id="wa-group-modal" role="dialog" aria-modal="true" aria-labelledby="wa-group-title" hidden>
+            <div class="wa-group-modal__backdrop" data-wa-close></div>
+            <div class="wa-group-modal__card" role="document">
+              <button class="wa-group-modal__close" type="button" data-wa-close aria-label="Tutup">&times;</button>
+              <div class="wa-group-modal__icon"><?= icon('whatsapp') ?></div>
+              <h3 id="wa-group-title">Gabung Grup WhatsApp</h3>
+              <p>Pendaftaran Anda berhasil. Silakan gabung grup WhatsApp panitia untuk informasi dan koordinasi lebih lanjut.</p>
+              <a class="btn btn--gold btn--block" href="<?= e($wa_group_link) ?>" target="_blank" rel="noopener noreferrer">Join Grup WhatsApp</a>
+              <button class="btn btn--outline btn--block js-open-payment" type="button">Konfirmasi Pembayaran</button>
+            </div>
+          </div>
+
+          <div class="payment-proof-modal" id="payment-proof-modal" role="dialog" aria-modal="true" aria-labelledby="proof-title" hidden>
+            <div class="payment-proof-modal__backdrop" data-proof-close></div>
+            <div class="payment-proof-modal__card" role="document">
+              <button class="payment-proof-modal__close" type="button" data-proof-close aria-label="Tutup">&times;</button>
+              <h3 id="proof-title">Konfirmasi Pembayaran</h3>
+              <div class="payment-proof-modal__info"><?= $paymentDetails ?></div>
+              <form id="payment-proof-form" novalidate>
+                <input type="hidden" id="proof-reg-id" name="id">
+                <label class="form-field">
+                  <span>Bukti Pembayaran <em>(JPG/PNG/WebP/PDF, maks. 5 MB)</em></span>
+                  <input type="file" id="proof-file" name="proof" accept="image/jpeg,image/png,image/webp,application/pdf" required>
+                </label>
+                <p class="form-error" id="proof-error" role="alert" hidden></p>
+                <p class="form-success-note" id="proof-success" role="status" hidden>Bukti pembayaran berhasil dikirim. Admin akan melihatnya pada dashboard.</p>
+                <button class="btn btn--gold btn--block" type="submit" id="proof-submit">Upload Bukti Pembayaran</button>
+              </form>
+            </div>
           </div>
         </div>
       </div>

@@ -119,3 +119,5 @@ Peserta isi form
 - Tabel Pendaftar dan Saran & Masukan di panel admin memiliki filter Event (Semua Event + daftar event), termasuk pada ekspor CSV.
 
 - Retensi otomatis: HANYA event yang sudah berlangsung (selesai) dan lewat 10 hari setelahnya yang dihapus dari index, halaman event, dan seluruh panel admin, beserta flyer, template sertifikat, pendaftar, dan saran terkait.
+
+- Setelah pendaftaran berhasil, popup grup WhatsApp memuat tombol Konfirmasi Pembayaran; bukti pembayaran yang diunggah tersimpan di assets/payment-proofs/ dan tampil sebagai thumbnail di dashboard admin.

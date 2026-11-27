@@ -109,6 +109,9 @@ $contact = [
     'instagram_url'  => 'https://instagram.com/stitwafiofficial',
 ];
 
+// Grup WhatsApp yang ditampilkan setelah pendaftaran berhasil.
+$wa_group_link = 'https://chat.whatsapp.com/DApz5TNoGja8Gp5fQSGqUI?s=cl&p=a&iam=2';
+
 $nav_links = [
     ['href' => '#informasi', 'label' => 'Informasi'],
     ['href' => '#biaya', 'label' => 'Biaya'],
@@ -245,7 +248,7 @@ $events = [
         'partners'    => ['STIT Al Wafi Bogor', 'UIN Sunan Gunung Djati Bandung'],
         'speakers'    => [
             [
-                'name'     => 'Dr. Elis Ratna Wulan, S.Si, M.T., AMLE, CIIQA, CIT',
+                'name'     => 'Assoc. Prof Dr. Elis Ratna Wulan, S.Si, M.T., AMLE, CIIQA, CIT',
                 'role'     => 'Kepala Pusat Akreditasi Internasional',
                 'bio'      => 'Kepala Pusat Akreditasi Internasional UIN Sunan Gunung Djati Bandung. Berpengalaman dalam akreditasi, audit mutu, dan pengembangan sistem penjaminan mutu perguruan tinggi.',
                 'initials' => 'ER',
@@ -291,7 +294,7 @@ $events = [
             ['question' => 'Apakah workshop ini diselenggarakan offline?', 'answer' => 'Ya. Workshop dilaksanakan langsung di Kampus B Al Wafi IBS, Jalan Pengasinan, Depok.'],
             ['question' => 'Apa saja yang didapat peserta?', 'answer' => 'Peserta mendapatkan materi, praktik, seminar kit, snack, coffee break, makan siang, dan Sertifikat Auditor AMI.'],
             ['question' => 'Berapa biaya pendaftarannya?', 'answer' => 'Harga normal Rp 1.000.000. Tersedia harga Early Bird Rp 699.000 khusus 35 pendaftar pertama.'],
-            ['question' => 'Siapa narasumber workshop ini?', 'answer' => 'Dr. Elis Ratna Wulan, S.Si, M.T., AMLE, CIIQA, CIT — Kepala Pusat Akreditasi Internasional UIN Sunan Gunung Djati Bandung.'],
+            ['question' => 'Siapa narasumber workshop ini?', 'answer' => 'Assoc. Prof Dr. Elis Ratna Wulan, S.Si, M.T., AMLE, CIIQA, CIT — Kepala Pusat Akreditasi Internasional UIN Sunan Gunung Djati Bandung.'],
             ['question' => 'Bagaimana cara mendaftar?', 'answer' => 'Isi formulir pendaftaran pada halaman event ini, lalu hubungi panitia di 0895 2721 7662 (Ustadz Said) untuk konfirmasi.'],
         ],
         'contact'     => [
@@ -303,7 +306,7 @@ $events = [
         'payment'     => [
             'bank'           => 'BSI',
             'account_number' => '8888441116',
-            'account_holder' => 'BSI STIT AL Wafi',
+            'account_holder' => 'STIT AL Wafi',
         ],
         'certificate' => [
             'prefix'           => 'AMI',

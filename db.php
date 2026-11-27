@@ -69,7 +69,8 @@ function ensure_schema(): void
                 other_training TEXT NULL,
                 status TEXT NOT NULL DEFAULT 'pending',
                 created_at TEXT NOT NULL,
-                source TEXT NOT NULL DEFAULT 'event-page'
+                source TEXT NOT NULL DEFAULT 'event-page',
+                payment_proof TEXT NULL
             )
         ");
         $pdo->exec('CREATE INDEX IF NOT EXISTS idx_whatsapp ON registrations(whatsapp)');
@@ -85,6 +86,7 @@ function ensure_schema(): void
             )
         ");
         $pdo->exec('CREATE INDEX IF NOT EXISTS idx_feedback_event ON feedback(event_slug)');
+        ensure_registration_proof_column();
         return;
     }
 
@@ -103,6 +105,7 @@ function ensure_schema(): void
             status ENUM('pending','lunas','terkonfirmasi') NOT NULL DEFAULT 'pending',
             created_at DATETIME NOT NULL,
             source VARCHAR(50) NOT NULL DEFAULT 'event-page',
+            payment_proof TEXT NULL,
             INDEX idx_whatsapp (whatsapp),
             INDEX idx_status (status)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
@@ -119,4 +122,34 @@ function ensure_schema(): void
             INDEX idx_feedback_event (event_slug)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
     ");
+
+    ensure_registration_proof_column();
+}
+
+/** Tambahkan kolom bukti pembayaran bila database sudah ada dari versi lama. */
+function ensure_registration_proof_column(): void
+{
+    $pdo = db();
+    try {
+        if (db_driver() === 'sqlite') {
+            $columns = $pdo->query('PRAGMA table_info(registrations)')->fetchAll();
+            $names = array_column($columns, 'name');
+            if (!in_array('payment_proof', $names, true)) {
+                $pdo->exec('ALTER TABLE registrations ADD COLUMN payment_proof TEXT NULL');
+            }
+            return;
+        }
+
+        $stmt = $pdo->prepare(
+            "SELECT COUNT(*) FROM information_schema.COLUMNS
+             WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'registrations'
+               AND COLUMN_NAME = 'payment_proof'"
+        );
+        $stmt->execute();
+        if ((int) $stmt->fetchColumn() === 0) {
+            $pdo->exec('ALTER TABLE registrations ADD COLUMN payment_proof TEXT NULL');
+        }
+    } catch (Throwable $e) {
+        error_log('Migrasi kolom payment_proof gagal: ' . $e->getMessage());
+    }
 }

@@ -50,3 +50,6 @@ next-env.d.ts
 # template sertifikat hasil upload
 /data/certificates.json
 /assets/certificates/
+
+# bukti pembayaran hasil upload peserta
+/assets/payment-proofs/

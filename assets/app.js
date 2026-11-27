@@ -69,6 +69,75 @@
   const successEl = document.getElementById('form-success');
   const successId = document.getElementById('form-success-id');
   const confirm = document.getElementById('reg-confirm');
+  const waModal = document.getElementById('wa-group-modal');
+  const paymentOpeners = Array.from(document.querySelectorAll('.js-open-payment'));
+  const proofModal = document.getElementById('payment-proof-modal');
+  const proofForm = document.getElementById('payment-proof-form');
+  const proofId = document.getElementById('proof-reg-id');
+  const proofFile = document.getElementById('proof-file');
+  const proofError = document.getElementById('proof-error');
+  const proofSuccess = document.getElementById('proof-success');
+  const proofSubmit = document.getElementById('proof-submit');
+
+  if (waModal) {
+    waModal.querySelectorAll('[data-wa-close]').forEach((button) => {
+      button.addEventListener('click', () => { waModal.hidden = true; });
+    });
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && !waModal.hidden) waModal.hidden = true;
+      if (event.key === 'Escape' && proofModal && !proofModal.hidden) proofModal.hidden = true;
+    });
+  }
+
+  paymentOpeners.forEach((button) => {
+    button.addEventListener('click', () => {
+      if (waModal) waModal.hidden = true;
+      if (proofModal) proofModal.hidden = false;
+    });
+  });
+
+  if (proofModal) {
+    proofModal.querySelectorAll('[data-proof-close]').forEach((button) => {
+      button.addEventListener('click', () => { proofModal.hidden = true; });
+    });
+  }
+
+  proofForm?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    proofError.hidden = true;
+    proofSuccess.hidden = true;
+
+    if (!proofId?.value) {
+      proofError.textContent = 'ID pendaftaran tidak tersedia. Silakan daftar ulang.';
+      proofError.hidden = false;
+      return;
+    }
+    if (!proofFile?.files?.length) {
+      proofError.textContent = 'Pilih file bukti pembayaran terlebih dahulu.';
+      proofError.hidden = false;
+      return;
+    }
+
+    const data = new FormData();
+    data.append('id', proofId.value);
+    data.append('proof', proofFile.files[0]);
+
+    proofSubmit.disabled = true;
+    proofSubmit.textContent = 'Mengunggah...';
+    try {
+      const response = await fetch('api/payment-proof', { method: 'POST', body: data });
+      const result = await response.json();
+      if (!response.ok || !result.ok) throw new Error(result.error || 'Upload bukti gagal.');
+      proofSuccess.hidden = false;
+      proofFile.value = '';
+    } catch (err) {
+      proofError.textContent = err.message;
+      proofError.hidden = false;
+    } finally {
+      proofSubmit.disabled = false;
+      proofSubmit.textContent = 'Upload Bukti Pembayaran';
+    }
+  });
 
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
@@ -98,9 +167,12 @@
       successId.innerHTML = result.id
         ? `ID Pendaftaran: <strong>${escapeHtml(result.id)}</strong>`
         : '';
+      if (proofId) proofId.value = result.id || '';
+      if (proofSuccess) proofSuccess.hidden = true;
       form.hidden = true;
       successEl.hidden = false;
       successEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      if (waModal) waModal.hidden = false;
     } catch (err) {
       errorEl.textContent = err.message;
       errorEl.hidden = false;
@@ -596,13 +668,16 @@ function downloadBlob(blob, filename) {
         <td><span>${escapeHtml(row.whatsapp)}</span><small>${escapeHtml(row.email)}</small></td>
         <td><span>${escapeHtml(row.city)}</span><small>${escapeHtml(row.info_source)}</small></td>
         <td><small>${escapeHtml(row.created_at)}</small></td>
+        <td>${row.payment_proof
+          ? `<a class="proof-thumb" href="${escapeHtml(row.payment_proof)}" target="_blank" rel="noopener noreferrer" title="Lihat bukti pembayaran"><img src="${escapeHtml(row.payment_proof)}" alt="Bukti pembayaran ${escapeHtml(row.name)}"></a>`
+          : '<small class="admin-id">Belum ada</small>'}</td>
         <td><select class="status-select status-select--${escapeHtml(row.status)}" data-id="${escapeHtml(row.id)}">
           ${['pending', 'lunas', 'terkonfirmasi'].map((s) =>
             `<option value="${s}"${s === row.status ? ' selected' : ''}>${escapeHtml(statusLabels[s] || s)}</option>`
           ).join('')}
         </select></td>
         <td><button class="admin-delete" type="button" data-delete="${escapeHtml(row.id)}" aria-label="Hapus pendaftar">Hapus</button></td>
-      </tr>`).join('') || `<tr><td colspan="6" class="admin-empty">Belum ada pendaftar yang cocok.</td></tr>`;
+      </tr>`).join('') || `<tr><td colspan="7" class="admin-empty">Belum ada pendaftar yang cocok.</td></tr>`;
 
     tbody.querySelectorAll('[data-delete]').forEach((button) => {
       button.addEventListener('click', async () => {

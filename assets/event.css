@@ -218,6 +218,14 @@ body {
   .payment-card h3 { margin: 0 0 .35rem; font-family: var(--font-heading); color: var(--navy-900); font-size: 1rem; }
   .payment-card p { margin: 0; font-size: .9rem; line-height: 1.7; color: var(--muted); }
   .payment-card__number { color: var(--gold-700); font-size: 1.05rem; }
+  .payment-card__logo { width: 170px; max-width: 100%; height: auto; flex: 0 0 170px; align-self: center; }
+  .payment-card__lines { margin: .45rem 0 .35rem; padding-left: 1.1rem; font-size: .9rem; line-height: 1.7; color: var(--muted); }
+  .payment-card__lines li { margin: .15rem 0; }
+  .payment-card__lines strong { color: var(--navy-900); }
+  @media (max-width: 620px) {
+    .payment-card { flex-direction: column; align-items: center; text-align: center; }
+    .payment-card__logo { flex: 0 0 auto; }
+  }
 
   /* ---------- Speaker ---------- */
   .speaker-grid { display: grid; gap: 1.5rem; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); max-width: 1100px; margin-inline: auto; }
@@ -302,6 +310,33 @@ body {
   .form-success__note { color: var(--gold-700) !important; font-weight: 600; }
   .form-success__id { font-size: .8rem !important; }
   .form-success .btn { margin-top: .5rem; }
+  .wa-group-modal { position: fixed; inset: 0; z-index: 1000; display: grid; place-items: center; padding: 1.25rem; }
+  .wa-group-modal[hidden] { display: none; }
+  .wa-group-modal__backdrop { position: absolute; inset: 0; background: rgba(8, 24, 46, .68); }
+  .wa-group-modal__card { position: relative; width: min(100%, 400px); display: grid; justify-items: center; gap: .85rem; padding: 2rem 1.6rem 1.6rem; background: var(--white); border-radius: var(--radius-md); box-shadow: 0 24px 70px rgba(8, 24, 46, .32); text-align: center; }
+  .wa-group-modal__close { position: absolute; top: .6rem; right: .8rem; border: 0; background: none; color: var(--muted); font-size: 1.6rem; line-height: 1; cursor: pointer; }
+  .wa-group-modal__icon { display: grid; place-items: center; width: 56px; height: 56px; border-radius: 50%; background: #e7f6ee; color: #128c7e; }
+  .wa-group-modal__icon svg { width: 28px; height: 28px; }
+  .wa-group-modal h3 { margin: 0; font-family: var(--font-heading); font-size: 1.25rem; color: var(--navy-900); }
+  .wa-group-modal p { margin: 0; font-size: .88rem; line-height: 1.65; color: var(--muted); }
+  .wa-group-modal .btn { width: 100%; }
+  .payment-proof-modal { position: fixed; inset: 0; z-index: 1001; display: grid; place-items: center; padding: 1.25rem; }
+  .payment-proof-modal[hidden] { display: none; }
+  .payment-proof-modal__backdrop { position: absolute; inset: 0; background: rgba(8, 24, 46, .68); }
+  .payment-proof-modal__card { position: relative; width: min(100%, 460px); max-height: 90vh; overflow-y: auto; display: grid; gap: 1rem; padding: 2rem 1.6rem 1.6rem; background: var(--white); border-radius: var(--radius-md); box-shadow: 0 24px 70px rgba(8, 24, 46, .32); }
+  .payment-proof-modal__close { position: absolute; top: .6rem; right: .8rem; border: 0; background: none; color: var(--muted); font-size: 1.6rem; line-height: 1; cursor: pointer; }
+  .payment-proof-modal h3 { margin: 0; font-family: var(--font-heading); color: var(--navy-900); font-size: 1.25rem; }
+  .payment-proof-modal__info { padding: .9rem 1rem; background: var(--cream); border: 1px dashed var(--gold-500); border-radius: var(--radius-sm); }
+  .payment-proof-modal__info h3 { font-size: .95rem; }
+  .payment-proof-modal__info p { margin: .35rem 0 0; font-size: .82rem; line-height: 1.6; color: var(--muted); }
+  .payment-proof-modal__info ul { margin: .45rem 0; padding-left: 1.1rem; font-size: .82rem; line-height: 1.6; color: var(--muted); }
+  .payment-proof-modal .form-field span { font-weight: 700; color: var(--navy-900); font-size: .82rem; }
+  .payment-proof-modal .form-field em { font-weight: 400; color: var(--muted); font-style: normal; }
+  .payment-proof-modal input[type="file"] { width: 100%; padding: .6rem; border: 1px dashed var(--border); border-radius: var(--radius-sm); font: inherit; font-size: .82rem; background: var(--white); }
+  .form-success-note { margin: 0; padding: .7rem .9rem; border-radius: var(--radius-sm); background: #e7f6ee; color: #0f6e5b; font-size: .82rem; line-height: 1.5; }
+  .proof-thumb { display: inline-block; line-height: 0; }
+  .proof-thumb img { width: 46px; height: 46px; object-fit: cover; border: 1px solid var(--border); border-radius: 8px; }
+  .proof-thumb img:hover { border-color: var(--gold-500); }
 
   /* ---------- FAQ ---------- */
   .faq-grid { display: grid; gap: 3rem; align-items: start; }

@@ -217,7 +217,7 @@ function normalize_event(array $input, ?string $forceSlug = null): array
         'payment'         => $input['payment'] ?? [
             'bank' => 'BSI',
             'account_number' => '8888441116',
-            'account_holder' => 'BSI STIT AL Wafi',
+            'account_holder' => 'STIT AL Wafi',
         ],
         'certificate'     => $input['certificate'] ?? [
             'prefix' => strtoupper(substr($slug, 0, 4)),

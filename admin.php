@@ -79,6 +79,7 @@ $theme = theme_style($event);
                   <th><?= e($column['label']) ?></th>
                 <?php endforeach; ?>
                 <th>Daftar</th>
+                <th>Bukti Bayar</th>
                 <th>Status</th>
                 <th>Aksi</th>
               </tr>
